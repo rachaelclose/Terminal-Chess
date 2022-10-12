@@ -1,3 +1,2 @@
 (library
- (name board)
- (public_name Chess))
+ (names board pawn pawn_move))
