@@ -1,2 +1,3 @@
 (library
- (names board pawn pawn_move))
+ (name Chess)
+ (libraries ANSITerminal))
