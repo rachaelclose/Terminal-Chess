@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /Users/rachaelclose/cs3110/CS3110-mux
 # Auto-detected concurrency: 16
-$ /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -config > /var/folders/8t/l9c7jyhx3sg8l02ql0shp5g80000gn/T/dune_112a26_output
+$ /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -config > /var/folders/8t/l9c7jyhx3sg8l02ql0shp5g80000gn/T/dune_c05532_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -118,20 +118,79 @@ $ /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -config > /var/folders/
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I src/.Chess.objs/byte -no-alias-deps -opaque -o src/.Chess.objs/byte/chess.cmo -c -impl src/chess.ml-gen)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamldep.opt -modules -impl src/pawn_move.ml) > _build/default/src/.Chess.objs/pawn_move.ml.d
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamldep.opt -modules -impl src/board.ml) > _build/default/src/.Chess.objs/board.ml.d
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamldep.opt -modules -impl src/pawn.ml) > _build/default/src/.Chess.objs/pawn.ml.d
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I src/.Chess.objs/byte -no-alias-deps -opaque -open Chess -o src/.Chess.objs/byte/chess__Pawn_move.cmo -c -impl src/pawn_move.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I src/.Chess.objs/byte -no-alias-deps -opaque -open Chess -o src/.Chess.objs/byte/chess__Board.cmo -c -impl src/board.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I src/.Chess.objs/byte -no-alias-deps -opaque -open Chess -o src/.Chess.objs/byte/chess__Pawn.cmo -c -impl src/pawn.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o src/Chess.cma src/.Chess.objs/byte/chess.cmo src/.Chess.objs/byte/chess__Pawn_move.cmo src/.Chess.objs/byte/chess__Pawn.cmo src/.Chess.objs/byte/chess__Board.cmo)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I test/.main.eobjs/byte -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2 -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2/advanced -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/seq -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/stdlib-shims -I src/.Chess.objs/byte -no-alias-deps -opaque -o test/.main.eobjs/byte/dune__exe__Main.cmi -c -intf test/main.mli)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I src/.Chess.objs/byte -I src/.Chess.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o src/.Chess.objs/native/chess.cmx -c -impl src/chess.ml-gen)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I src/.Chess.objs/byte -I src/.Chess.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Chess -o src/.Chess.objs/native/chess__Board.cmx -c -impl src/board.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I src/.Chess.objs/byte -I src/.Chess.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Chess -o src/.Chess.objs/native/chess__Pawn_move.cmx -c -impl src/pawn_move.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I src/.Chess.objs/byte -I src/.Chess.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Chess -o src/.Chess.objs/native/chess__Pawn.cmx -c -impl src/pawn.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I test/.main.eobjs/byte -I test/.main.eobjs/native -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2 -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2/advanced -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/seq -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/stdlib-shims -I src/.Chess.objs/byte -I src/.Chess.objs/native -intf-suffix .ml -no-alias-deps -opaque -o test/.main.eobjs/native/dune__exe__Main.cmx -c -impl test/main.ml)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o src/Chess.cmxa src/.Chess.objs/native/chess.cmx src/.Chess.objs/native/chess__Pawn_move.cmx src/.Chess.objs/native/chess__Pawn.cmx src/.Chess.objs/native/chess__Board.cmx)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I src -o src/Chess.cmxs src/Chess.cmxa)
-$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o test/main.exe src/Chess.cmxa /Users/rachaelclose/.opam/cs3110-2022fa/lib/ocaml/unix.cmxa -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ocaml -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ocaml /Users/rachaelclose/.opam/cs3110-2022fa/lib/stdlib-shims/stdlib_shims.cmxa /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2/advanced/oUnitAdvanced.cmxa /Users/rachaelclose/.opam/cs3110-2022fa/lib/ounit2/oUnit.cmxa test/.main.eobjs/native/dune__exe__Main.cmx)
+$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I src/.Chess.objs/byte -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ANSITerminal -intf-suffix .ml -no-alias-deps -opaque -open Chess -o src/.Chess.objs/byte/chess__Piece_move.cmo -c -impl src/piece_move.ml)
+> File "src/piece_move.ml", line 4, characters 13-17:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                  ^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Pawn.
+> File "src/piece_move.ml", line 4, characters 18-26:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                       ^^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Bishop.
+> File "src/piece_move.ml", line 4, characters 27-35:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                ^^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Knight.
+> File "src/piece_move.ml", line 4, characters 36-42:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                         ^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Rook.
+> File "src/piece_move.ml", line 4, characters 43-50:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                                ^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Queen.
+> File "src/piece_move.ml", line 4, characters 51-57:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                                        ^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor King.
+> File "src/piece_move.ml", line 6, characters 0-25:
+> 6 | type side = White | Black
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 34 [unused-type-declaration]): unused type side.
+> File "src/piece_move.ml", line 6, characters 12-17:
+> 6 | type side = White | Black
+>                 ^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor White.
+> File "src/piece_move.ml", line 6, characters 18-25:
+> 6 | type side = White | Black
+>                       ^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Black.
+[2]
+$ (cd _build/default && /Users/rachaelclose/.opam/cs3110-2022fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I src/.Chess.objs/byte -I src/.Chess.objs/native -I /Users/rachaelclose/.opam/cs3110-2022fa/lib/ANSITerminal -intf-suffix .ml -no-alias-deps -opaque -open Chess -o src/.Chess.objs/native/chess__Piece_move.cmx -c -impl src/piece_move.ml)
+> File "src/piece_move.ml", line 4, characters 13-17:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                  ^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Pawn.
+> File "src/piece_move.ml", line 4, characters 18-26:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                       ^^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Bishop.
+> File "src/piece_move.ml", line 4, characters 27-35:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                ^^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Knight.
+> File "src/piece_move.ml", line 4, characters 36-42:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                         ^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Rook.
+> File "src/piece_move.ml", line 4, characters 43-50:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                                ^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Queen.
+> File "src/piece_move.ml", line 4, characters 51-57:
+> 4 | type piece = Pawn | Bishop | Knight | Rook | Queen | King
+>                                                        ^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor King.
+> File "src/piece_move.ml", line 6, characters 0-25:
+> 6 | type side = White | Black
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 34 [unused-type-declaration]): unused type side.
+> File "src/piece_move.ml", line 6, characters 12-17:
+> 6 | type side = White | Black
+>                 ^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor White.
+> File "src/piece_move.ml", line 6, characters 18-25:
+> 6 | type side = White | Black
+>                       ^^^^^^^
+> Error (warning 37 [unused-constructor]): unused constructor Black.
+[2]

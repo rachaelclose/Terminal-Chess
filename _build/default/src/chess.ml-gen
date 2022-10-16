@@ -2,9 +2,9 @@
 module Board = Chess__Board
 
 
-(** @canonical Chess.Pawn *)
-module Pawn = Chess__Pawn
+(** @canonical Chess.Piece *)
+module Piece = Chess__Piece
 
 
-(** @canonical Chess.Pawn_move *)
-module Pawn_move = Chess__Pawn_move
+(** @canonical Chess.Piece_move *)
+module Piece_move = Chess__Piece_move
