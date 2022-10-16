@@ -1,0 +1,10 @@
+(** @canonical Chess.Board *)
+module Board = Chess__Board
+
+
+(** @canonical Chess.Pawn *)
+module Pawn = Chess__Pawn
+
+
+(** @canonical Chess.Pawn_move *)
+module Pawn_move = Chess__Pawn_move
