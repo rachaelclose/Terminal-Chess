@@ -1,7 +1,14 @@
-type rank = Pawn | Bishop | Knight | Rook | Queen | King
+type rank =
+  | Pawn
+  | Bishop
+  | Knight
+  | Rook
+  | Queen
+  | King
 
-type side = White | Black
-
+type side =
+  | White
+  | Black
 
 type piece = {
   rank : rank;
@@ -12,4 +19,3 @@ type mov = {
   letter : char;
   number : int;
 }
-
