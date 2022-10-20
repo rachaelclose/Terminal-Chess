@@ -35,10 +35,11 @@ let play_game = init
 let rec run_game board =
   ANSITerminal.print_string [ ANSITerminal.black ] board;
   match read_line () with
-  | "move a7 a5" ->
-      run_game next_b;
-      ()
-  | _ -> ()
+  | "move a7 a5" -> ANSITerminal.print_string [ ANSITerminal.black ] next_b
+  | _ ->
+      ANSITerminal.print_string [ ANSITerminal.black ]
+        "Please give a valid command"
+if true then () else run_game next_b
 
 (* create ~ command.ml in a2 -> parse (strip of spaces, etc) -> board.ml where
    you update board -> return that to main.ml*)
