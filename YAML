@@ -1,14 +1,14 @@
 ---
 # Members of your group.
 group:
-  - name: Michael Clarkson
-    netid: mrc26
-  - name: Ryan Doenges
-    netid: rhd89
-  - name:
-    netid:
-  - name:
-    netid:
+  - name: Sara Yoo
+    netid: sy427
+  - name: Lauren Kam
+    netid: lk543
+  - name: Rachael Close
+    netid: rlc355
+  - name: Neha Sunkara
+    netid: ns597
 # Your PM.
 pm:
   name: Mia Davis
@@ -16,9 +16,9 @@ pm:
 # Set to false if you don't want your gallery entry to be public.
 publish: false
 # Pithy title
-title: "The Complete Caml Calculator (CCC)"
+title: "Terminal Chess"
 # OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
-git-repo: "https://github.com/cs3110/textbook"
+git-repo: "https://github.coecis.cornell.edu/ns597/CS3110-mux"
 # If you have no demo screencast, replace the url string with an empty string ""
 demo-video-url: ""
 # Write a short, attention-grabbing description of your project.
