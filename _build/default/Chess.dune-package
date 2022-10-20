@@ -1,4 +1,0 @@
-(lang dune 3.4)
-(name Chess)
-(sections (lib .) (doc ../../doc/Chess))
-(files (lib (META dune-package opam)) (doc (README.md)))
