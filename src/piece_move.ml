@@ -5,10 +5,12 @@ type rank =
   | Rook
   | Queen
   | King
+  | Nothing
 
 type side =
   | White
   | Black
+  | Nothing
 
 type piece = {
   rank : rank;
