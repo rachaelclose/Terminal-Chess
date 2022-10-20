@@ -1,2 +1,2 @@
 (** creates a chessboard*)
-let board = Arrays.make 8 0 |> Array.make 8
+let board = Array.make 8 'a'
