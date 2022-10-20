@@ -12,8 +12,18 @@ let init =
   \ 5 _ _ _ _ _ _ _ _ \n\
   \ 6 _ _ _ _ _ _ _ _ \n\
   \ 7 ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
-  \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n\
-  \ \n"
+  \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
+
+let next_b =
+  "   a b c d e f g h \n\
+  \ 1 ♜ ♞ ♝ ♚ ♛ ♝ ♞ ♜ \n\
+  \ 2 ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n\
+  \ 3 _ _ _ _ _ _ _ _ \n\
+  \ 4 _ _ _ _ _ _ _ _ \n\
+  \ 5 ♙ _ _ _ _ _ _ _ \n\
+  \ 6 _ _ _ _ _ _ _ _ \n\
+  \ 7 _ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
+  \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
 
 (** [play_game f] starts the game in file [f]. *)
 let play_game = init
@@ -21,8 +31,20 @@ let play_game = init
 
 (* let data_dir_prefix = "data" ^ Filename.dir_sep *)
 
+(* [run_game] takes in a user_input to run the game. *)
+let rec run_game board =
+  ANSITerminal.print_string [ ANSITerminal.black ] board;
+  match read_line () with
+  | "move a7 a5" ->
+      run_game next_b;
+      ()
+  | _ -> ()
+
+(* create ~ command.ml in a2 -> parse (strip of spaces, etc) -> board.ml where
+   you update board -> return that to main.ml*)
+
 (** [main ()] prompts for the game to play, then starts it. *)
-let main () = ANSITerminal.print_string [ ANSITerminal.black ] play_game
+let main () = run_game play_game
 
 (* "\n\nWelcome to the 3110 Chess Game engine.\n"; print_endline "Please enter
    the name of the game file you want to load.\n"; *)
