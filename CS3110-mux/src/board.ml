@@ -53,5 +53,3 @@ let move a b x y =
   let piece = (what_piece a b) in
     remove_piece a b;
     place_piece piece x y;
-
-
