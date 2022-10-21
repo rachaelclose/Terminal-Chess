@@ -8,35 +8,25 @@ open Printf
 
 let init =
   "   a b c d e f g h \n\
-  \ 1 ♜ ♞ ♝ ♚ ♛ ♝ ♞ ♜ \n\
-  \ 2 ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n\
-  \ 3 _ _ _ _ _ _ _ _ \n\
-  \ 4 _ _ _ _ _ _ _ _ \n\
-  \ 5 _ _ _ _ _ _ _ _ \n\
+  \ 8 ♜ ♞ ♝ ♚ ♛ ♝ ♞ ♜ \n\
+  \ 7 ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n\
   \ 6 _ _ _ _ _ _ _ _ \n\
-  \ 7 ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
-  \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
+  \ 5 _ _ _ _ _ _ _ _ \n\
+  \ 4 _ _ _ _ _ _ _ _ \n\
+  \ 3 _ _ _ _ _ _ _ _ \n\
+  \ 2 ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
+  \ 1 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
 
 let next_b =
   "   a b c d e f g h \n\
-  \ 1 ♜ ♞ ♝ ♚ ♛ ♝ ♞ ♜ \n\
-  \ 2 ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n\
-  \ 3 _ _ _ _ _ _ _ _ \n\
-  \ 4 _ _ _ _ _ _ _ _ \n\
-  \ 5 ♙ _ _ _ _ _ _ _ \n\
+  \ 8 ♜ ♞ ♝ ♚ ♛ ♝ ♞ ♜ \n\
+  \ 7 ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n\
   \ 6 _ _ _ _ _ _ _ _ \n\
-  \ 7 _ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
-  \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
-
-(** print a single piece's letter*)
-let print_an_element piece = print_string (matching piece ^ " ")
-
-(** print the current board*)
-let print_board board =
-  board
-  |> Array.iter (fun x ->
-         Array.iter print_an_element x;
-         print_endline "")
+  \ 5 _ _ _ _ _ _ _ _ \n\
+  \ 4 ♙ _ _ _ _ _ _ _ \n\
+  \ 3 _ _ _ _ _ _ _ _ \n\
+  \ 2 _ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
+  \ 1 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
 
 (** [play_game f] starts the game in file [f]. *)
 let play_game = init
@@ -45,7 +35,22 @@ let play_game = init
 (* let data_dir_prefix = "data" ^ Filename.dir_sep *)
 
 (** check method that checks if it is a valid input*)
-let check str = true
+let s_int str index = int_of_char (String.get str index) - 48
+
+(** check method that checks if it is a valid input*)
+let parse board str =
+  let nstr = String.split_on_char ' ' str |> List.filter (fun st -> st <> "") in
+  match nstr with
+  | [ h; t1; t2 ] ->
+      if h = "move" then (
+        let c1 = s_int t1 0 in
+        let c2 = s_int t1 1 in
+        let c3 = s_int t2 0 in
+        let c4 = s_int t2 1 in
+        move board c1 c2 c3 c4;
+        true)
+      else false
+  | _ -> false
 
 (** variable showing if someone won / game is done*)
 let game_end = false
@@ -59,8 +64,8 @@ let rec run_game board =
   print_board board;
   (* change next_b to output of function that gives a string form of board*)
   let s = read_line () in
-  let p = check s in
-  if p then update board s else print_endline "Please give a valid input";
+  let p = parse board s in
+  if p then () else print_endline "Please give a valid input";
   if game_end then print_endline "Congrats you won" else run_game board
 (* match read_line () with | "move a7 a5" -> ANSITerminal.print_string [
    ANSITerminal.black ] next_b | _ -> ANSITerminal.print_string [
@@ -70,7 +75,7 @@ let rec run_game board =
    you update board -> return that to main.ml*)
 
 (** [main ()] prompts for the game to play, then starts it. *)
-let main () = run_game board_of_pawns
+let main () = run_game board_of_pieces
 
 (* "\n\nWelcome to the 3110 Chess Game engine.\n"; print_endline "Please enter
    the name of the game file you want to load.\n"; *)
