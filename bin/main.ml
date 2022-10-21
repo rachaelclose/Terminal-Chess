@@ -1,5 +1,6 @@
 (* print_endline ("Hi there!") --> this code will be printed out whenever we run
    <dune exec ./main.exe> under bin folder in terminal*)
+(**)
 
 open Game.Board
 
