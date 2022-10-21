@@ -24,6 +24,9 @@ type square = {
   x : int;
   y : int;
 }
+
+type board = piece array array
+
 (** dunno if I'll use this, using array indexes is probably easier*)
 
 let space = { rank = Nothing; side = Nothing }
@@ -34,6 +37,12 @@ let board_of_pawns = Array.make 8 (Array.make 8 pawn)
 
 (** board of all spaces loll*)
 let board_of_spaces = Array.make 8 (Array.make 8 space)
+
+(** allow access of piece's rank outside this file*)
+let rank_piece piece = piece.rank
+
+(** allow access of piece's side outside this file*)
+let side_piece piece = piece.side
 
 (* let set_pieces_in_space piece row_index column_index = function (Array.set
    (Array.get board_of_spaces row_index) column_index piece) row_index *)

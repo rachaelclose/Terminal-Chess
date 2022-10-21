@@ -27,24 +27,26 @@ let next_b =
   \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
 
 (** match piece with the corresponding representing letter*)
-  let matching piece = 
-   match piece.rank with 
-   | Pawn -> "p"
-   | Bishop -> "b"
-   | Knight -> "k"
-   | Rook -> "r"
-   | Queen -> "q"
-   | King -> "K"
-   | Nothing -> "_"
-   
+let matching piece =
+  let m = rank_piece piece in
+  match m with
+  | Pawn -> "p"
+  | Bishop -> "b"
+  | Knight -> "k"
+  | Rook -> "r"
+  | Queen -> "q"
+  | King -> "K"
+  | Nothing -> "_"
+
 (** print a single piece's letter*)
-   let print_an_element piece = 
-    print_string ((matching piece) ^ " ")
-   
+let print_an_element piece = print_string (matching piece ^ " ")
+
 (** print the current board*)
-   let print_board board = 
-   board |> Array.iter (fun x -> Array.iter print_an_element x; print_endline "")
-   
+let print_board board =
+  board
+  |> Array.iter (fun x ->
+         Array.iter print_an_element x;
+         print_endline "")
 
 (** [play_game f] starts the game in file [f]. *)
 let play_game = init
@@ -63,7 +65,8 @@ let update board s = remove_piece board 3 4
 
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =
-  ANSITerminal.print_string [ ANSITerminal.black ] next_b;
+  (* ANSITerminal.print_string [ ANSITerminal.black ] next_b; *)
+  print_board board;
   (* change next_b to output of function that gives a string form of board*)
   let s = read_line () in
   let p = check s in
