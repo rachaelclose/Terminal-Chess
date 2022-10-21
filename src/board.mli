@@ -8,3 +8,5 @@ val board_of_pawns : piece array array
 val rank_piece : piece -> rank
 val side_piece : piece -> side
 val matching : piece -> string
+
+(** *)
