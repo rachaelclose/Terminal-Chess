@@ -3,5 +3,5 @@ Hi, thank you for playing our game! In the terminal...
 1) Go to the directory where you saved the CS3110-MUX folder
 2) Then go to the bin folder
 3) Run <dune build>
-4) Then run <dune exec ./main.exec>
+4) Then run <dune exec ./main.exe>
 5) A board will appear on the terminal and you can play!
