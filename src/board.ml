@@ -1,3 +1,4 @@
+open Printf
 (** creates a chessboard*)
 
 type rank =
@@ -80,3 +81,15 @@ let move_mvp board (piece_index : int) (destination_index : int) =
   let piece = what_piece_mvp board piece_index in
   remove_piece_mvp board piece_index;
   place_piece_mvp board piece destination_index
+
+(** match piece with the corresponding representing letter*)
+let matching piece =
+  let m = rank_piece piece in
+  match m with
+  | Pawn -> "♙"
+  | Bishop -> "b"
+  | Knight -> "k"
+  | Rook -> "r"
+  | Queen -> "q"
+  | King -> "/u{2654}"
+  | Nothing -> "_"

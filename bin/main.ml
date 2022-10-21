@@ -2,6 +2,8 @@
    <dune exec ./main.exe> under bin folder in terminal*)
 
 open Game.Board
+
+open Printf
 (** initial board*)
 
 let init =
@@ -25,18 +27,6 @@ let next_b =
   \ 6 _ _ _ _ _ _ _ _ \n\
   \ 7 _ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
   \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
-
-(** match piece with the corresponding representing letter*)
-let matching piece =
-  let m = rank_piece piece in
-  match m with
-  | Pawn -> "p"
-  | Bishop -> "b"
-  | Knight -> "k"
-  | Rook -> "r"
-  | Queen -> "q"
-  | King -> "K"
-  | Nothing -> "_"
 
 (** print a single piece's letter*)
 let print_an_element piece = print_string (matching piece ^ " ")
