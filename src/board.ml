@@ -39,6 +39,39 @@ let board_of_pawns = Array.make 8 (Array.make 8 pawn)
 (** board of all spaces loll*)
 let board_of_spaces = Array.make 8 (Array.make 8 space)
 
+(** board of all pieces*)
+let board_of_pieces = Array.make_matrix 8 8 pawn
+
+let board_of_game =
+  let black_pawn = { pawn with side = Black } in
+  board_of_pieces.(0).(0) <- { black_pawn with rank = Rook };
+  board_of_pieces.(0).(1) <- { black_pawn with rank = Knight };
+  board_of_pieces.(0).(2) <- { black_pawn with rank = Bishop };
+  board_of_pieces.(0).(3) <- { black_pawn with rank = King };
+  board_of_pieces.(0).(4) <- { black_pawn with rank = Queen };
+  board_of_pieces.(0).(5) <- { black_pawn with rank = Bishop };
+  board_of_pieces.(0).(6) <- { black_pawn with rank = Knight };
+  board_of_pieces.(0).(7) <- { black_pawn with rank = Rook };
+  for i = 0 to 7 do
+    board_of_pieces.(1).(i) <- black_pawn
+  done;
+  for i = 2 to 5 do
+    for j = 0 to 7 do
+      board_of_pieces.(i).(j) <- space
+    done
+  done;
+  for i = 0 to 7 do
+    board_of_pieces.(6).(i) <- pawn
+  done;
+  board_of_pieces.(7).(0) <- { pawn with rank = Rook };
+  board_of_pieces.(7).(1) <- { pawn with rank = Knight };
+  board_of_pieces.(7).(2) <- { pawn with rank = Bishop };
+  board_of_pieces.(7).(3) <- { pawn with rank = King };
+  board_of_pieces.(7).(4) <- { pawn with rank = Queen };
+  board_of_pieces.(7).(5) <- { pawn with rank = Bishop };
+  board_of_pieces.(7).(6) <- { pawn with rank = Knight };
+  board_of_pieces.(7).(7) <- { pawn with rank = Rook }
+
 (** allow access of piece's rank outside this file*)
 let rank_piece piece = piece.rank
 
@@ -55,7 +88,7 @@ let what_piece board row_index column_index =
 let what_piece_mvp board index = Array.get board index
 
 (**done? Should remove the piece at the specified index*)
-let remove_piece board (row_index : int) (column_index : int) =
+let remove_piece (board : board) (row_index : int) (column_index : int) =
   let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index space;
   Array.set board row_index new_row
@@ -63,7 +96,8 @@ let remove_piece board (row_index : int) (column_index : int) =
 let remove_piece_mvp board (index : int) = Array.set board index space
 
 (** not done, currently replaces row with row of the pieces*)
-let place_piece board (piece : piece) (row_index : int) (column_index : int) =
+let place_piece (board : board) (piece : piece) (row_index : int)
+    (column_index : int) =
   let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index piece;
   Array.set board row_index new_row
@@ -85,11 +119,28 @@ let move_mvp board (piece_index : int) (destination_index : int) =
 (** match piece with the corresponding representing letter*)
 let matching piece =
   let m = rank_piece piece in
-  match m with
-  | Pawn -> "♙"
-  | Bishop -> "b"
-  | Knight -> "k"
-  | Rook -> "r"
-  | Queen -> "q"
-  | King -> "/u{2654}"
-  | Nothing -> "_"
+  let n = side_piece piece in
+  match (m, n) with
+  | Pawn, White -> "♙"
+  | Bishop, White -> "♗"
+  | Knight, White -> "♘"
+  | Rook, White -> "♖"
+  | Queen, White -> "♕"
+  | King, White -> "♔"
+  | Pawn, Black -> "♟"
+  | Bishop, Black -> "♝"
+  | Knight, Black -> "♞"
+  | Rook, Black -> "♜"
+  | Queen, Black -> "♛"
+  | King, Black -> "♚"
+  | _ -> "_"
+
+(** print a single piece's letter*)
+let print_an_element piece = print_string (matching piece ^ " ")
+
+(** print the current board*)
+let print_board (board : piece array array) =
+  board
+  |> Array.iter (fun x ->
+         Array.iter print_an_element x;
+         print_endline "")
