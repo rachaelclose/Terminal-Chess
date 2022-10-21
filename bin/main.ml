@@ -1,6 +1,7 @@
 (* print_endline ("Hi there!") --> this code will be printed out whenever we run
    <dune exec ./main.exe> under bin folder in terminal*)
 
+open Game.Board
 (** initial board*)
 
 let init =
@@ -31,21 +32,32 @@ let play_game = init
 
 (* let data_dir_prefix = "data" ^ Filename.dir_sep *)
 
+(** check method that checks if it is a valid input*)
+let check str = true
+
+(** variable showing if someone won / game is done*)
+let game_end = false
+
+(** method updating the board*)
+let update board s = remove_piece board 3 4
+
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =
-  ANSITerminal.print_string [ ANSITerminal.black ] board;
-  match read_line () with
-  | "move a7 a5" -> ANSITerminal.print_string [ ANSITerminal.black ] next_b
-  | _ ->
-      ANSITerminal.print_string [ ANSITerminal.black ]
-        "Please give a valid command"
-if true then () else run_game next_b
+  ANSITerminal.print_string [ ANSITerminal.black ] next_b;
+  (* change next_b to output of function that gives a string form of board*)
+  let s = read_line () in
+  let p = check s in
+  if p then update board s else print_endline "Please give a valid input";
+  if game_end then print_endline "Congrats you won" else run_game board
+(* match read_line () with | "move a7 a5" -> ANSITerminal.print_string [
+   ANSITerminal.black ] next_b | _ -> ANSITerminal.print_string [
+   ANSITerminal.black ] "Please give a valid command" *)
 
 (* create ~ command.ml in a2 -> parse (strip of spaces, etc) -> board.ml where
    you update board -> return that to main.ml*)
 
 (** [main ()] prompts for the game to play, then starts it. *)
-let main () = run_game play_game
+let main () = run_game board_of_pawns
 
 (* "\n\nWelcome to the 3110 Chess Game engine.\n"; print_endline "Please enter
    the name of the game file you want to load.\n"; *)

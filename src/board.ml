@@ -46,9 +46,7 @@ let what_piece_mvp board index = Array.get board index
 
 (**done? Should remove the piece at the specified index*)
 let remove_piece board (row_index : int) (column_index : int) =
-  let new_row =
-    (Array.copy (Array.get board row_index))
-  in
+  let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index space;
   Array.set board row_index new_row
 
@@ -56,7 +54,7 @@ let remove_piece_mvp board (index : int) = Array.set board index space
 
 (** not done, currently replaces row with row of the pieces*)
 let place_piece board (piece : piece) (row_index : int) (column_index : int) =
-  let new_row = (Array.copy (Array.get board row_index)) in
+  let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index piece;
   Array.set board row_index new_row
 

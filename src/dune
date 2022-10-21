@@ -1,3 +1,4 @@
 (library
- (name piece)
+ (name game)
+ (public_name Game)
  (libraries ANSITerminal))
