@@ -26,6 +26,26 @@ let next_b =
   \ 7 _ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n\
   \ 8 ♖ ♘ ♗ ♔ ♕ ♗ ♘ ♖ \n"
 
+(** match piece with the corresponding representing letter*)
+  let matching piece = 
+   match piece.rank with 
+   | Pawn -> "p"
+   | Bishop -> "b"
+   | Knight -> "k"
+   | Rook -> "r"
+   | Queen -> "q"
+   | King -> "K"
+   | Nothing -> "_"
+   
+(** print a single piece's letter*)
+   let print_an_element piece = 
+    print_string ((matching piece) ^ " ")
+   
+(** print the current board*)
+   let print_board board = 
+   board |> Array.iter (fun x -> Array.iter print_an_element x; print_endline "")
+   
+
 (** [play_game f] starts the game in file [f]. *)
 let play_game = init
 (* raise (Failure "Unimplemented: Main.play_game") *)
