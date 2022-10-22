@@ -83,7 +83,7 @@ let side_piece piece = piece.side
 
 (** function that returns the piece at the given*)
 let what_piece board row_index column_index =
-  Array.get (Array.get board column_index) row_index
+  Array.get (Array.get board row_index) column_index
 
 let what_piece_mvp board index = Array.get board index
 
@@ -104,12 +104,6 @@ let place_piece (board : board) (piece : piece) (row_index : int)
 
 let place_piece_mvp board (piece : piece) (index : int) =
   Array.set board index piece
-
-let move board (piece_row : int) (piece_column : int) (destination_row : int)
-    (destination_column : int) =
-  let piece = what_piece board piece_row piece_column in
-  remove_piece board piece_row piece_column;
-  place_piece board piece destination_row destination_column
 
 let move_mvp board (piece_index : int) (destination_index : int) =
   let piece = what_piece_mvp board piece_index in
@@ -144,3 +138,9 @@ let print_board (board : piece array array) =
   |> Array.iter (fun x ->
          Array.iter print_an_element x;
          print_endline "")
+
+let move board (piece_row : int) (piece_column : int) (destination_row : int)
+    (destination_column : int) =
+  let piece = what_piece board piece_row piece_column in
+  remove_piece board piece_row piece_column;
+  place_piece board piece destination_row destination_column
