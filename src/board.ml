@@ -139,8 +139,40 @@ let print_board (board : piece array array) =
          Array.iter print_an_element x;
          print_endline "")
 
+(******************************************************************************)
+
+(** master function for chess move*)
 let move board (piece_row : int) (piece_column : int) (destination_row : int)
     (destination_column : int) =
   let piece = what_piece board piece_row piece_column in
   remove_piece board piece_row piece_column;
   place_piece board piece destination_row destination_column
+
+(** [moves_except_outside arr] is a new array without moves outside of the board
+    from array [arr]*)
+let moves_except_outside arr =
+  let new_inside_arr = ref [||] in
+  for i = 0 to Array.length arr do
+    if fst arr.(i) > 7 || fst arr.(i) < 0 || snd arr.(i) > 7 || snd arr.(i) < 0
+    then ()
+    else new_inside_arr := Array.append !new_inside_arr (Array.make 1 arr.(i))
+  done;
+  !new_inside_arr
+
+(** [general_moves_knight x y] is an array of coordinates of general moves by a
+    knight in coordinate (x,y)*)
+let general_moves_knight x y =
+  [|
+    (x - 2, y + 1);
+    (x - 1, y + 2);
+    (x + 1, y + 2);
+    (x + 2, y + 1);
+    (x + 2, y - 1);
+    (x + 1, y - 2);
+    (x - 1, y - 2);
+    (x - 2, y - 1);
+  |]
+
+(** [legal_moves_knight x y] is an array of coordinates of legal moves by a
+    knight in coordinate (x,y) *)
+let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
