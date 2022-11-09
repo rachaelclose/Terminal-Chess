@@ -173,6 +173,44 @@ let general_moves_knight x y =
     (x - 2, y - 1);
   |]
 
+  (** [general_moves_bishop x y] is an array of coordinates of general moves by a
+    bishop in coordinate (x,y)*)
+  let general_moves_bishop x y =
+    [|
+      (x + 1, y + 1);
+      (x + 2, y + 2);
+      (x + 3, y + 3);
+      (x + 4, y + 4);
+      (x + 5, y + 5);
+      (x + 6, y + 6);
+      (x + 7, y + 7);
+      (x - 1, y - 1);
+      (x - 2, y - 2);
+      (x - 3, y - 3);
+      (x - 4, y - 4);
+      (x - 5, y - 5);
+      (x - 6, y - 6);
+      (x - 7, y - 7);
+      (x + 1, y - 1);
+      (x + 2, y - 2);
+      (x + 3, y - 3);
+      (x + 4, y - 4);
+      (x + 5, y - 5);
+      (x + 6, y - 6);
+      (x + 7, y - 7);
+      (x - 1, y + 1);
+      (x - 2, y + 2);
+      (x - 3, y + 3);
+      (x - 4, y + 4);
+      (x - 5, y + 5);
+      (x - 6, y + 6);
+      (x - 7, y + 7);
+    |]
+
 (** [legal_moves_knight x y] is an array of coordinates of legal moves by a
     knight in coordinate (x,y) *)
 let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
+
+(** [legal_moves_bishop x y] is an array of coordinates of legal moves by a
+    bishop in coordinate (x,y) *)
+    let legal_moves_bishop x y = general_moves_bishop x y |> moves_except_outside
