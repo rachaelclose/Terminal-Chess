@@ -30,6 +30,12 @@ type board = piece array array
 
 (** dunno if I'll use this, using array indexes is probably easier*)
 
+(**[piece_in_tuple piece] is a tuple (rank, side) of a [piece] *)
+let piece_in_tuple piece =
+  let r = piece.rank in
+  let s = piece.side in
+  (r, s)
+
 let space = { rank = Nothing; side = Nothing }
 let pawn = { rank = Pawn; side = White }
 
@@ -173,39 +179,78 @@ let general_moves_knight x y =
     (x - 2, y - 1);
   |]
 
-  (** [general_moves_bishop x y] is an array of coordinates of general moves by a
+(** [general_moves_bishop x y] is an array of coordinates of general moves by a
     bishop in coordinate (x,y)*)
-  let general_moves_bishop x y =
-    [|
-      (x + 1, y + 1);
-      (x + 2, y + 2);
-      (x + 3, y + 3);
-      (x + 4, y + 4);
-      (x + 5, y + 5);
-      (x + 6, y + 6);
-      (x + 7, y + 7);
-      (x - 1, y - 1);
-      (x - 2, y - 2);
-      (x - 3, y - 3);
-      (x - 4, y - 4);
-      (x - 5, y - 5);
-      (x - 6, y - 6);
-      (x - 7, y - 7);
-      (x + 1, y - 1);
-      (x + 2, y - 2);
-      (x + 3, y - 3);
-      (x + 4, y - 4);
-      (x + 5, y - 5);
-      (x + 6, y - 6);
-      (x + 7, y - 7);
-      (x - 1, y + 1);
-      (x - 2, y + 2);
-      (x - 3, y + 3);
-      (x - 4, y + 4);
-      (x - 5, y + 5);
-      (x - 6, y + 6);
-      (x - 7, y + 7);
-    |]
+let general_moves_bishop x y =
+  [|
+    (x + 1, y + 1);
+    (x + 2, y + 2);
+    (x + 3, y + 3);
+    (x + 4, y + 4);
+    (x + 5, y + 5);
+    (x + 6, y + 6);
+    (x + 7, y + 7);
+    (x - 1, y - 1);
+    (x - 2, y - 2);
+    (x - 3, y - 3);
+    (x - 4, y - 4);
+    (x - 5, y - 5);
+    (x - 6, y - 6);
+    (x - 7, y - 7);
+    (x + 1, y - 1);
+    (x + 2, y - 2);
+    (x + 3, y - 3);
+    (x + 4, y - 4);
+    (x + 5, y - 5);
+    (x + 6, y - 6);
+    (x + 7, y - 7);
+    (x - 1, y + 1);
+    (x - 2, y + 2);
+    (x - 3, y + 3);
+    (x - 4, y + 4);
+    (x - 5, y + 5);
+    (x - 6, y + 6);
+    (x - 7, y + 7);
+  |]
+
+(** [general_moves_rook x y] is an array of coordinates of general moves by a
+    rook in coordinate (x,y)*)
+let general_moves_rook x y =
+  [|
+    (x + 1, y);
+    (x + 2, y);
+    (x + 3, y);
+    (x + 4, y);
+    (x + 5, y);
+    (x + 6, y);
+    (x + 7, y);
+    (x - 1, y);
+    (x - 2, y);
+    (x - 3, y);
+    (x - 4, y);
+    (x - 5, y);
+    (x - 6, y);
+    (x - 7, y);
+    (x, y + 1);
+    (x, y + 2);
+    (x, y + 3);
+    (x, y + 4);
+    (x, y + 5);
+    (x, y + 6);
+    (x, y + 7);
+    (x, y - 1);
+    (x, y - 2);
+    (x, y - 3);
+    (x, y - 4);
+    (x, y - 5);
+    (x, y - 6);
+    (x, y - 7);
+  |]
+
+(** [general_moves_pawn x y] is an array of coordinates of general moves by a
+    pawn in coordinate (x,y)*)
+let general_moves_pawn x y =
+  [| (x, y + 1); (x, y + 2); (x - 1, y + 1); (x + 1, y + 1) |]
 
 (** [legal_moves_knight x y] is an array of coordinates of legal moves by a
     knight in coordinate (x,y) *)
@@ -213,4 +258,55 @@ let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
 
 (** [legal_moves_bishop x y] is an array of coordinates of legal moves by a
     bishop in coordinate (x,y) *)
-    let legal_moves_bishop x y = general_moves_bishop x y |> moves_except_outside
+let legal_moves_bishop x y = general_moves_bishop x y |> moves_except_outside
+
+(** [legal_moves_rook x y] is an array of coordinates of legal moves by a rook
+    in coordinate (x,y) *)
+let legal_moves_rook x y = general_moves_rook x y |> moves_except_outside
+
+(** [legal_moves_pawn x y] is an array of coordinates of legal moves by a pawn
+    in coordinate (x,y) *)
+let legal_moves_pawn x y = general_moves_pawn x y |> moves_except_outside
+
+(** [is_under_attack board x y] is true if the piece in coordinate (x,y) is
+    under attack in board [board] meaning it is in one of the legal moves for an
+    opposing piece*)
+let is_under_attack board x y =
+  let side_of_piece_being_checked = side_piece (what_piece board x y) in
+  let acc = ref false in
+  for i = 0 to 7 do
+    for j = 0 to 7 do
+      match what_piece board i j |> piece_in_tuple with
+      | Nothing, _ -> ()
+      | _, Nothing -> ()
+      | Pawn, s ->
+          acc :=
+            !acc
+            || s <> side_of_piece_being_checked
+               && Array.mem (x, y) (legal_moves_pawn i j)
+      | Bishop, s ->
+          acc :=
+            !acc
+            || s <> side_of_piece_being_checked
+               && Array.mem (x, y) (legal_moves_bishop i j)
+      | Knight, s ->
+          acc :=
+            !acc
+            || s <> side_of_piece_being_checked
+               && Array.mem (x, y) (legal_moves_knight i j)
+      | Rook, s ->
+          acc :=
+            !acc
+            || s <> side_of_piece_being_checked
+               && Array.mem (x, y) (legal_moves_rook i j)
+      | Queen, s -> ()
+      | King, s -> ()
+    done
+  done;
+  !acc
+
+(*accumulator*)
+(*for loop over each square of board: with access to indices *)
+(*pattern-match each square: 1) Nothing -> (), 2-7) if (x,y) is in
+  legal_move_<piece> <indices> then true else () *)
+(*return accumulator*)
