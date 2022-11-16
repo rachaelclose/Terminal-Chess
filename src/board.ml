@@ -281,9 +281,9 @@ let legal_moves_queen x y =
   for i = 0 to total_length_for_bishop_array do
     array.(i) <- (general_moves_bishop x y).(i)
   done;
-  let k = total_length_for_bishop_array + 1 in
   for j = 0 to total_length_for_rook_array do
-    array.(j + total_length_for_bishop_array) <- (general_moves_rook x y).(j)
+    array.(j + total_length_for_bishop_array + 1) <-
+      (general_moves_rook x y).(j)
   done;
   array |> moves_except_outside
 
