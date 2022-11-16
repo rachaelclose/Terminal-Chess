@@ -268,6 +268,25 @@ let legal_moves_rook x y = general_moves_rook x y |> moves_except_outside
     in coordinate (x,y) *)
 let legal_moves_pawn x y = general_moves_pawn x y |> moves_except_outside
 
+(** [legal_moves_queen x y] is an array of coordinates of legal moves by a queen
+    in coordinate (x,y) *)
+let legal_moves_queen x y =
+  let total_length_for_bishop_array = Array.length (general_moves_bishop x y) in
+  let total_length_for_rook_array = Array.length (general_moves_rook x y) in
+  let array =
+    Array.make
+      (total_length_for_bishop_array + total_length_for_rook_array)
+      (x, y)
+  in
+  for i = 0 to total_length_for_bishop_array do
+    array.(i) <- (general_moves_bishop x y).(i)
+  done;
+  let k = total_length_for_bishop_array + 1 in
+  for j = 0 to total_length_for_rook_array do
+    array.(j + total_length_for_bishop_array) <- (general_moves_rook x y).(j)
+  done;
+  array |> moves_except_outside
+
 (** [is_under_attack board x y] is true if the piece in coordinate (x,y) is
     under attack in board [board] meaning it is in one of the legal moves for an
     opposing piece*)
