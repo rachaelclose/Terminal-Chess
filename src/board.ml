@@ -252,6 +252,14 @@ let general_moves_rook x y =
 let general_moves_pawn x y =
   [| (x, y + 1); (x, y + 2); (x - 1, y + 1); (x + 1, y + 1) |]
 
+(** [general_moves_king x y] is an array of coordinates of general moves by a
+    king in coordinate (x,y)*)
+    let general_moves_king x y =
+      [| (x, y + 1); (x, y - 1); (x + 1, y); (x - 1, y);  (x + 1, y + 1); 
+      (x - 1, y - 1);  (x + 1, y - 1);  (x - 1, y + 1) |]
+
+
+
 (** [legal_moves_knight x y] is an array of coordinates of legal moves by a
     knight in coordinate (x,y) *)
 let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
@@ -286,6 +294,10 @@ let legal_moves_queen x y =
       (general_moves_rook x y).(j)
   done;
   array |> moves_except_outside
+
+(** [legal_moves_king x y] is an array of coordinates of legal moves by a king
+    in coordinate (x,y) *)
+    let legal_moves_king x y = general_moves_king x y |> moves_except_outside
 
 (** [is_under_attack board x y] is true if the piece in coordinate (x,y) is
     under attack in board [board] meaning it is in one of the legal moves for an
@@ -323,7 +335,11 @@ let is_under_attack board x y =
             !acc
             || s <> side_of_piece_being_checked
                && Array.mem (x, y) (legal_moves_queen i j)
-      | King, s -> ()
+      | King, s -> 
+        acc :=
+      !acc
+      || s <> side_of_piece_being_checked
+         && Array.mem (x, y) (legal_moves_king i j)
     done
   done;
   !acc
