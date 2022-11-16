@@ -247,6 +247,20 @@ let general_moves_rook x y =
     (x, y - 7);
   |]
 
+(** [general_moves_king x y] is an array of coordinates of general moves by a
+    king in coordinate (x,y)*)
+let general_moves_king x y =
+  [|
+    (x - 1, y);
+    (x - 1, y + 1);
+    (x, y + 1);
+    (x + 1, y + 1);
+    (x + 1, y);
+    (x + 1, y - 1);
+    (x, y - 1);
+    (x - 1, y - 1);
+  |]
+
 (** [general_moves_pawn x y] is an array of coordinates of general moves by a
     pawn in coordinate (x,y)*)
 let general_moves_pawn x y =
