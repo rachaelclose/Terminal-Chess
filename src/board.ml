@@ -318,7 +318,11 @@ let is_under_attack board x y =
             !acc
             || s <> side_of_piece_being_checked
                && Array.mem (x, y) (legal_moves_rook i j)
-      | Queen, s -> ()
+      | Queen, s ->
+          acc :=
+            !acc
+            || s <> side_of_piece_being_checked
+               && Array.mem (x, y) (legal_moves_queen i j)
       | King, s -> ()
     done
   done;
