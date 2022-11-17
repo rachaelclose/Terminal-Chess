@@ -43,13 +43,12 @@ let parse board str =
   let nstr = String.split_on_char ' ' str |> List.filter (fun st -> st <> "") in
   match nstr with
   | [ h; t1; t2 ] ->
-      if h = "move" then (
+      if h = "move" then
         let c1 = s_int t1 0 in
         let c2 = s_int t1 1 in
         let c3 = s_int t2 0 in
         let c4 = s_int t2 1 in
-        move board c1 c2 c3 c4;
-        true)
+        move board c1 c2 c3 c4
       else false
   | _ -> false
 

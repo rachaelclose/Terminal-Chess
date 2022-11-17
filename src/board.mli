@@ -10,5 +10,5 @@ val board_of_pieces : board
 val rank_piece : piece -> rank
 val side_piece : piece -> side
 val matching : piece -> string
-val move : board -> int -> int -> int -> int -> unit
+val move : board -> int -> int -> int -> int -> bool
 val print_board : board -> unit

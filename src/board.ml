@@ -147,18 +147,11 @@ let print_board (board : piece array array) =
 
 (******************************************************************************)
 
-(** master function for chess move*)
-let move board (piece_row : int) (piece_column : int) (destination_row : int)
-    (destination_column : int) =
-  let piece = what_piece board piece_row piece_column in
-  remove_piece board piece_row piece_column;
-  place_piece board piece destination_row destination_column
-
 (** [moves_except_outside arr] is a new array without moves outside of the board
     from array [arr]*)
 let moves_except_outside arr =
   let new_inside_arr = ref [||] in
-  for i = 0 to Array.length arr do
+  for i = 0 to Array.length arr - 1 do
     if fst arr.(i) > 7 || fst arr.(i) < 0 || snd arr.(i) > 7 || snd arr.(i) < 0
     then ()
     else new_inside_arr := Array.append !new_inside_arr (Array.make 1 arr.(i))
@@ -273,6 +266,7 @@ let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
 (** [legal_moves_bishop x y] is an array of coordinates of legal moves by a
     bishop in coordinate (x,y) *)
 let legal_moves_bishop x y = general_moves_bishop x y |> moves_except_outside
+(* ^^ In the future.. Also should check if there's piece in the way*)
 
 (** [legal_moves_rook x y] is an array of coordinates of legal moves by a rook
     in coordinate (x,y) *)
@@ -355,3 +349,31 @@ let is_under_attack board x y =
 (*pattern-match each square: 1) Nothing -> (), 2-7) if (x,y) is in
   legal_move_<piece> <indices> then true else () *)
 (*return accumulator*)
+
+let move_knight board (piece_row : int) (piece_column : int)
+    (destination_row : int) (destination_column : int) =
+  if
+    Array.mem
+      (destination_row, destination_column)
+      (legal_moves_knight piece_row piece_column)
+  then (
+    let mov_piece = what_piece board piece_row piece_column in
+
+    remove_piece board piece_row piece_column;
+    place_piece board mov_piece destination_row destination_column;
+    true)
+  else false
+
+(* ^^ Prob in this function.. Check if king is under attack?*)
+
+(** master function for chess move*)
+let move board (piece_row : int) (piece_column : int) (destination_row : int)
+    (destination_column : int) =
+  let piece = what_piece board piece_row piece_column in
+  match rank_piece piece with
+  | Knight ->
+      move_knight board piece_row piece_column destination_row
+        destination_column
+  | _ ->
+      move_knight board piece_row piece_column destination_row
+        destination_column
