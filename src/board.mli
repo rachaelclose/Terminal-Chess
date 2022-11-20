@@ -1,8 +1,9 @@
-type piece
-type board
 type rank
 type side
+type piece
+type board
 
+val what_piece : board -> int -> int -> piece
 val remove_piece : board -> int -> int -> unit
 val board_of_pawns : board
 val board_of_spaces : board
