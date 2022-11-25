@@ -1,3 +1,11 @@
+(* Test Plan: - We are automatically testing the functions what_piece and move,
+   thus implicitly testing board_of_pieces, matching, and many helper functions
+   that describe the moves of each chess piece. These tests were done through
+   black box and glass box testing. - We are manually testing print_board
+   through the interactive game on the terminal. - We have proven the
+   correctness of our system by comparing the output of our functions with the
+   expected outputs, as well as physically seeing if our system works the way it
+   is supposed through our interactive terminal.*)
 open OUnit2
 open Game
 open Board
@@ -7,12 +15,17 @@ let what_piece_test (name : string) (board : board) (row : int) (col : int)
   name >:: fun _ ->
   assert_equal expected_output (what_piece board row col |> matching)
 
-let move_test (name : string) (board : board) (orow : int) (ocol : int)
+let move_piece_test (name : string) (board : board) (orow : int) (ocol : int)
     (drow : int) (dcol : int) : test =
   name >:: fun _ ->
   let exp = what_piece board orow ocol |> matching in
   if move board orow ocol drow dcol then
     assert_equal exp (what_piece board drow dcol |> matching)
+
+let move_legal_test (name : string) (board : board) (orow : int) (ocol : int)
+    (drow : int) (dcol : int) (expected_output : bool) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (move board orow ocol drow dcol)
 
 let what_piece_tests =
   [
@@ -82,7 +95,45 @@ let what_piece_tests =
     what_piece_test "16what_piece white rook" board_of_pieces 7 7 "♖";
   ]
 
-let move_tests = [ move_test "move white knight" board_of_pieces 7 6 5 5 ]
+let move_piece_tests =
+  [
+    move_piece_test "move white knight" board_of_pieces 7 6 5 5;
+    move_piece_test "move black bishop" board_of_pieces 0 2 1 3;
+    move_piece_test "move black bishop" board_of_pieces 0 2 1 3;
+    move_piece_test "move black bishop again" board_of_pieces 1 3 2 4;
+    move_piece_test "move " board_of_pieces 1 3 2 4;
+  ]
+
+let move_legal_tests =
+  [
+    move_legal_test "move white knight legal" board_of_pieces 7 6 5 5 true;
+    move_legal_test "move black rook illegal" board_of_pieces 0 0 1 0 false;
+    move_legal_test "move white knight illegal" board_of_pieces 5 5 4 6 false;
+    move_legal_test "move white knight illegal 2" board_of_pieces 5 5 7 4 false;
+    move_legal_test "move black bishop illegal" board_of_pieces 0 2 1 3 false;
+    move_legal_test "double move black pawn" board_of_pieces 1 3 3 3 true;
+    move_legal_test "move black pawn illegal" board_of_pieces 3 3 5 3 false;
+    move_legal_test "move black pawn" board_of_pieces 3 3 4 3 true;
+    move_legal_test "move black bishop" board_of_pieces 0 2 3 5 true;
+    move_legal_test "move black bishop illegal" board_of_pieces 3 5 4 5 false;
+    move_legal_test "move black pawn 0" board_of_pieces 1 0 3 0 true;
+    move_legal_test "move black pawn 1" board_of_pieces 1 1 3 0 false;
+    move_legal_test "move black pawn 1" board_of_pieces 1 1 4 1 false;
+    move_legal_test "move black pawn 1" board_of_pieces 1 1 3 1 true;
+    move_legal_test "move black pawn 2" board_of_pieces 1 2 0 2 false;
+    move_legal_test "move black pawn 2" board_of_pieces 1 2 2 2 true;
+    move_legal_test "move black pawn 4" board_of_pieces 1 4 3 4 true;
+    move_legal_test "move black pawn 5 illegal" board_of_pieces 1 5 3 5 false;
+    move_legal_test "move black pawn 5" board_of_pieces 1 5 2 5 false;
+    move_legal_test "move black pawn 6" board_of_pieces 1 6 2 6 true;
+    move_legal_test "move black pawn 7" board_of_pieces 1 7 3 7 true;
+    move_legal_test "move black rook" board_of_pieces 0 0 2 0 true;
+    move_legal_test "move black rook" board_of_pieces 2 0 1 0 true;
+    move_legal_test "move black rook" board_of_pieces 1 0 1 5 true;
+    move_legal_test "move black rook" board_of_pieces 1 5 2 5 false
+    (* at this point we're at
+       1n1qkbnr/5r2/2p2pp1/pp2pb1p/3p4/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1 *);
+  ]
 
 (*let remove_tests = let removed_blk_king = remove_piece board_of_pieces 3 0 in
   let removed_blk_pawn = remove_piece board_of_pieces 1 3 in let removed_nothing
@@ -95,6 +146,9 @@ let move_tests = [ move_test "move white knight" board_of_pieces 7 6 5 5 ]
 
 let suite =
   "test suite for chess"
-  >::: List.flatten [ what_piece_tests; move_tests (*remove_tests*) ]
+  >::: List.flatten
+         [
+           what_piece_tests; move_piece_tests; move_legal_tests (*remove_tests*);
+         ]
 
 let _ = run_test_tt_main suite

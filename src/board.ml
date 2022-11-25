@@ -30,8 +30,6 @@ type square = {
 
 type board = piece array array
 
-(** dunno if I'll use this, using array indexes is probably easier*)
-
 (**[piece_in_tuple piece] is a tuple (rank, side) of a [piece] *)
 let piece_in_tuple piece =
   let r = piece.rank in
@@ -42,14 +40,6 @@ let space =
   { rank = Nothing; side = Nothing; hasMoved = false; enPassant = false }
 
 let pawn = { rank = Pawn; side = White; hasMoved = false; enPassant = false }
-
-(** board of all white pawns loll*)
-let board_of_pawns = Array.make 8 (Array.make 8 pawn)
-
-(** board of all spaces loll*)
-let board_of_spaces = Array.make 8 (Array.make 8 space)
-
-(** board of all pieces*)
 let board_of_pieces = Array.make_matrix 8 8 pawn
 
 let board_of_game =
@@ -97,36 +87,20 @@ let enPassant_piece piece = piece.enPassant
 (* let set_pieces_in_space piece row_index column_index = function (Array.set
    (Array.get board_of_spaces row_index) column_index piece) row_index *)
 
-(** function that returns the piece at the given*)
 let what_piece board row_index column_index =
   Array.get (Array.get board row_index) column_index
 
-let what_piece_mvp board index = Array.get board index
-
-(**done? Should remove the piece at the specified index*)
 let remove_piece (board : board) (row_index : int) (column_index : int) =
   let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index space;
   Array.set board row_index new_row
 
-let remove_piece_mvp board (index : int) = Array.set board index space
-
-(** not done, currently replaces row with row of the pieces*)
 let place_piece (board : board) (piece : piece) (row_index : int)
     (column_index : int) =
   let new_row = Array.copy (Array.get board row_index) in
   Array.set new_row column_index piece;
   Array.set board row_index new_row
 
-let place_piece_mvp board (piece : piece) (index : int) =
-  Array.set board index piece
-
-let move_mvp board (piece_index : int) (destination_index : int) =
-  let piece = what_piece_mvp board piece_index in
-  remove_piece_mvp board piece_index;
-  place_piece_mvp board piece destination_index
-
-(** match piece with the corresponding representing letter*)
 let matching piece =
   let m = rank_piece piece in
   let n = side_piece piece in
@@ -150,10 +124,28 @@ let print_an_element piece = print_string (matching piece ^ " ")
 
 (** print the current board*)
 let print_board (board : piece array array) =
-  board
-  |> Array.iter (fun x ->
-         Array.iter print_an_element x;
-         print_endline "")
+  print_string "  ";
+  print_string "a b c d e f g h ";
+  print_endline "";
+
+  for i = 0 to 7 do
+    print_string (string_of_int (8 - i) ^ " ");
+    Array.iter (fun x -> print_an_element x) board.(i);
+    print_endline ""
+  done;
+  ()
+
+let print_board_black (board : piece array array) =
+  print_string "  ";
+  print_string "a b c d e f g h ";
+  print_endline "";
+
+  for i = 0 to 7 do
+    print_string (string_of_int (i + 1) ^ " ");
+    Array.iter (fun x -> print_an_element x) board.(i);
+    print_endline ""
+  done;
+  ()
 
 (******************************************************************************)
 
@@ -184,7 +176,7 @@ let general_moves_knight x y =
 
 (** [general_moves_bishop x y] is an array of coordinates of general moves by a
     bishop in coordinate (x,y)*)
-let general_moves_bishop x y =
+let old_general_moves_bishop x y =
   [|
     (x + 1, y + 1);
     (x + 2, y + 2);
@@ -216,12 +208,12 @@ let general_moves_bishop x y =
     (x - 7, y + 7);
   |]
 
-let general_moves_2_bishop board x y =
+let general_moves_bishop board x y =
   let new_inside_arr = ref [||] in
   let color = (what_piece board x y).side in
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
+  while x + !i < 8 && y + !i < 8 && !continue do
     match side_piece (what_piece board (x + !i) (y + !i)) with
     | White ->
         if color = White then continue := false
@@ -242,7 +234,7 @@ let general_moves_2_bishop board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
+  while x - !i >= 0 && y - !i >= 0 && !continue do
     match side_piece (what_piece board (x - !i) (y - !i)) with
     | White ->
         if color = White then continue := false
@@ -263,7 +255,7 @@ let general_moves_2_bishop board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
+  while x + !i < 8 && y - !i >= 0 && !continue do
     match side_piece (what_piece board (x + !i) (y - !i)) with
     | White ->
         if color = White then continue := false
@@ -284,7 +276,7 @@ let general_moves_2_bishop board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
+  while x - !i >= 0 && y + !i < 8 && !continue do
     match side_piece (what_piece board (x - !i) (y + !i)) with
     | White ->
         if color = White then continue := false
@@ -307,7 +299,7 @@ let general_moves_2_bishop board x y =
 
 (** [general_moves_rook x y] is an array of coordinates of general moves by a
     rook in coordinate (x,y)*)
-let general_moves_rook x y =
+let old_general_moves_rook x y =
   [|
     (x + 1, y);
     (x + 2, y);
@@ -339,13 +331,13 @@ let general_moves_rook x y =
     (x, y - 7);
   |]
 
-let general_moves_2_rook board x y =
+let general_moves_rook board x y =
   let new_inside_arr = ref [||] in
   let color = (what_piece board x y).side in
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
-    match side_piece (what_piece board (x + !i) (y + !i)) with
+  while y + !i < 8 && !continue do
+    match side_piece (what_piece board x (y + !i)) with
     | White ->
         if color = White then continue := false
         else
@@ -365,8 +357,8 @@ let general_moves_2_rook board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
-    match side_piece (what_piece board (x - !i) (y - !i)) with
+  while y - !i >= 0 && !continue do
+    match side_piece (what_piece board x (y - !i)) with
     | White ->
         if color = White then continue := false
         else
@@ -386,8 +378,8 @@ let general_moves_2_rook board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
-    match side_piece (what_piece board (x + !i) (y - !i)) with
+  while x + !i < 8 && !continue do
+    match side_piece (what_piece board (x + !i) y) with
     | White ->
         if color = White then continue := false
         else
@@ -407,8 +399,8 @@ let general_moves_2_rook board x y =
   done;
   let i = ref 1 in
   let continue = ref true in
-  while !i < 8 && !continue do
-    match side_piece (what_piece board (x - !i) (y + !i)) with
+  while x - !i >= 0 && !continue do
+    match side_piece (what_piece board (x - !i) y) with
     | White ->
         if color = White then continue := false
         else
@@ -430,8 +422,38 @@ let general_moves_2_rook board x y =
 
 (** [general_moves_pawn x y] is an array of coordinates of general moves by a
     pawn in coordinate (x,y)*)
-let general_moves_pawn x y =
+let old_general_moves_pawn x y =
   [| (x, y + 1); (x, y + 2); (x - 1, y + 1); (x + 1, y + 1) |]
+
+let general_moves_pawn board x y =
+  let new_inside_arr = ref [||] in
+  let color = (what_piece board x y).side in
+  (*let hasMoved = hasMoved_piece (what_piece board x y) in*)
+  if side_piece (what_piece board (x + 1) y) = Nothing && color = Black then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (x + 1, y));
+  if side_piece (what_piece board (x - 1) y) = Nothing && color = White then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (x - 1, y));
+  if
+    x = 1 && color = Black
+    && side_piece (what_piece board (x + 1) y) = Nothing
+    && side_piece (what_piece board (x + 2) y) = Nothing
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (x + 2, y));
+  if
+    (x = 6 && color = White)
+    && side_piece (what_piece board (x - 1) y) = Nothing
+    && side_piece (what_piece board (x - 2) y) = Nothing
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (x - 2, y));
+  let result = !new_inside_arr in
+  result
+(*let right = match side_piece (what_piece board (x + 1) (y + 1)) with | White
+  -> if color <> White then new_inside_arr := Array.append !new_inside_arr
+  (Array.make 1 (x + 1, y + 1)) | Black -> if color <> Black then new_inside_arr
+  := Array.append !new_inside_arr (Array.make 1 (x + 1, y + 1)) | Nothing -> ()
+  in let left = match side_piece (what_piece board (x - 1) (y + 1)) with | White
+  -> if color <> White then new_inside_arr := Array.append !new_inside_arr
+  (Array.make 1 (x - 1, y + 1)) | Black -> if color <> Black then new_inside_arr
+  := Array.append !new_inside_arr (Array.make 1 (x - 1, y + 1)) | Nothing -> ()
+  (*add en passsant*) in*)
 
 (** [general_moves_king x y] is an array of coordinates of general moves by a
     king in coordinate (x,y)*)
@@ -445,48 +467,57 @@ let general_moves_king x y =
     (x - 1, y - 1);
     (x + 1, y - 1);
     (x - 1, y + 1);
+    (x - 2, y);
+    (x + 2, y);
   |]
 
 (** [legal_moves_knight x y] is an array of coordinates of legal moves by a
     knight in coordinate (x,y) *)
-let legal_moves_knight x y = general_moves_knight x y |> moves_except_outside
+let legal_moves_knight (board : piece array array) x y =
+  general_moves_knight x y |> moves_except_outside
 
 (** [legal_moves_bishop x y] is an array of coordinates of legal moves by a
     bishop in coordinate (x,y) *)
 let legal_moves_bishop board x y =
-  general_moves_2_bishop board x y |> moves_except_outside
+  general_moves_bishop board x y |> moves_except_outside
 
 (** [legal_moves_rook x y] is an array of coordinates of legal moves by a rook
     in coordinate (x,y) *)
 let legal_moves_rook board x y =
-  general_moves_2_rook board x y |> moves_except_outside
+  general_moves_rook board x y |> moves_except_outside
 
 (** [legal_moves_pawn x y] is an array of coordinates of legal moves by a pawn
     in coordinate (x,y) *)
-let legal_moves_pawn x y = general_moves_pawn x y |> moves_except_outside
+let legal_moves_pawn (board : piece array array) x y =
+  general_moves_pawn board x y |> moves_except_outside
 
 (** [legal_moves_queen x y] is an array of coordinates of legal moves by a queen
     in coordinate (x,y) *)
-let legal_moves_queen x y =
-  let total_length_for_bishop_array = Array.length (general_moves_bishop x y) in
-  let total_length_for_rook_array = Array.length (general_moves_rook x y) in
+let legal_moves_queen (board : piece array array) x y =
+  let total_length_for_bishop_array =
+    Array.length (general_moves_bishop board x y)
+  in
+  let total_length_for_rook_array =
+    Array.length (general_moves_rook board x y)
+  in
   let array =
     Array.make
       (total_length_for_bishop_array + total_length_for_rook_array)
       (x, y)
   in
   for i = 0 to total_length_for_bishop_array do
-    array.(i) <- (general_moves_bishop x y).(i)
+    array.(i) <- (general_moves_bishop board x y).(i)
   done;
   for j = 0 to total_length_for_rook_array do
     array.(j + total_length_for_bishop_array + 1) <-
-      (general_moves_rook x y).(j)
+      (general_moves_rook board x y).(j)
   done;
   array |> moves_except_outside
 
 (** [legal_moves_king x y] is an array of coordinates of legal moves by a king
     in coordinate (x,y) *)
-let legal_moves_king x y = general_moves_king x y |> moves_except_outside
+let legal_moves_king (board : piece array array) x y =
+  general_moves_king x y |> moves_except_outside
 
 (** [is_under_attack board x y] is true if the piece in coordinate (x,y) is
     under attack in board [board] meaning it is in one of the legal moves for an
@@ -503,7 +534,7 @@ let is_under_attack board x y =
           acc :=
             !acc
             || s <> side_of_piece_being_checked
-               && Array.mem (x, y) (legal_moves_pawn i j)
+               && Array.mem (x, y) (legal_moves_pawn board i j)
       | Bishop, s ->
           acc :=
             !acc
@@ -513,7 +544,7 @@ let is_under_attack board x y =
           acc :=
             !acc
             || s <> side_of_piece_being_checked
-               && Array.mem (x, y) (legal_moves_knight i j)
+               && Array.mem (x, y) (legal_moves_knight board i j)
       | Rook, s ->
           acc :=
             !acc
@@ -523,12 +554,12 @@ let is_under_attack board x y =
           acc :=
             !acc
             || s <> side_of_piece_being_checked
-               && Array.mem (x, y) (legal_moves_queen i j)
+               && Array.mem (x, y) (legal_moves_queen board i j)
       | King, s ->
           acc :=
             !acc
             || s <> side_of_piece_being_checked
-               && Array.mem (x, y) (legal_moves_king i j)
+               && Array.mem (x, y) (legal_moves_king board i j)
     done
   done;
   !acc
@@ -539,12 +570,28 @@ let is_under_attack board x y =
   legal_move_<piece> <indices> then true else () *)
 (*return accumulator*)
 
-let move_knight board (piece_row : int) (piece_column : int)
+(** let find_row_of_piece board side rank= let value = ~-1 in for i= 0 to 7 do
+    for j=0 to 7 do if ((side = side_piece (what_piece board i j)) && (rank =
+    what_piece board i j)) then value = i else value = ~-1 done; done; value
+
+    let find_column_of_piece board side rank = let value = ~-1 in for i= 0 to 7
+    do for j=0 to 7 do if ((side = side_piece (what_piece board i j)) && (rank =
+    what_piece board i j)) then value = j else value = ~-1 done; done; value
+
+    let is_king_in_check board (piece_row : int) (piece_column : int) = let
+    move_piece_side = side_piece (what_piece board piece_row piece_column) in
+    let row = find_row_of_piece board move_piece_side King in let column =
+    find_column_of_piece board move_piece_side King in Array.mem (row, column)
+    (legal_moves_knight piece_row piece_column) *)
+
+(** If the king is in any of the legal moves from the other side's pieces *)
+
+let move_piece board legal_moves (piece_row : int) (piece_column : int)
     (destination_row : int) (destination_column : int) =
   if
     Array.mem
       (destination_row, destination_column)
-      (legal_moves_knight piece_row piece_column)
+      (legal_moves board piece_row piece_column)
   then (
     let mov_piece = what_piece board piece_row piece_column in
 
@@ -552,7 +599,6 @@ let move_knight board (piece_row : int) (piece_column : int)
     place_piece board mov_piece destination_row destination_column;
     true)
   else false
-
 (* ^^ Prob in this function.. Check if king is under attack?*)
 
 (** master function for chess move*)
@@ -563,8 +609,23 @@ let move board (piece_row : int) (piece_column : int) (destination_row : int)
   in
   match rank_piece piece with
   | Knight ->
-      move_knight board piece_row piece_column destination_row
+      move_piece board legal_moves_knight piece_row piece_column destination_row
+        destination_column
+  | Bishop ->
+      move_piece board legal_moves_bishop piece_row piece_column destination_row
+        destination_column
+  | Rook ->
+      move_piece board legal_moves_rook piece_row piece_column destination_row
+        destination_column
+  | King ->
+      move_piece board legal_moves_king piece_row piece_column destination_row
+        destination_column
+  | Queen ->
+      move_piece board legal_moves_queen piece_row piece_column destination_row
+        destination_column
+  | Pawn ->
+      move_piece board legal_moves_pawn piece_row piece_column destination_row
         destination_column
   | _ ->
-      move_knight board piece_row piece_column destination_row
+      move_piece board legal_moves_knight piece_row piece_column destination_row
         destination_column

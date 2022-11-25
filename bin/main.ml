@@ -3,6 +3,7 @@
 (**)
 
 open Game.Board
+open Game.State
 
 open Printf
 (** initial board*)
@@ -52,11 +53,15 @@ let parse board str =
       else false
   | _ -> false
 
-(** variable showing if someone won / game is done*)
-let game_end = false
+(* add functions: is_checkmate; no_legal_moves_available;*)
 
-(** method updating the board*)
-let update board s = remove_piece board 3 4
+(** tells if someone won / game is done*)
+let game_end = false
+(* update turn to <next_color>*)
+
+(* For checkmate: *)
+(* 1. check if <next_color>'s king is under check: if not return false*)
+(* 2. else return no_legal_moves*)
 
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =
