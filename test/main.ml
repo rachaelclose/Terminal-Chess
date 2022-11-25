@@ -7,16 +7,14 @@ let what_piece_test (name : string) (board : board) (row : int) (col : int)
   name >:: fun _ ->
   assert_equal expected_output (what_piece board row col |> matching)
 
-(*let move_test (name: string) (orow: int) (ocol: int) (drow: int) (dcol: int)
-  (expected_output: bool) :test = name >:: fun _ -> assert_equal expected_output
-  (what_piece board row col |> matching)*)
+let move_test (name : string) (board : board) (orow : int) (ocol : int)
+    (drow : int) (dcol : int) : test =
+  name >:: fun _ ->
+  let exp = what_piece board orow ocol |> matching in
+  if move board orow ocol drow dcol then
+    assert_equal exp (what_piece board drow dcol |> matching)
 
-(*let removed_blk_king = remove_piece board_of_pieces 3 0 let removed_blk_pawn =
-  remove_piece board_of_pieces 1 3 let removed_nothing = remove_piece
-  board_of_pieces 4 3 let removed_white_bishop = remove_piece board_of_pieces 7
-  2*)
-
-let tests =
+let what_piece_tests =
   [
     what_piece_test "1what_piece black rook" board_of_pieces 0 0 "♜";
     what_piece_test "2what_piece black knight" board_of_pieces 0 1 "♞";
@@ -81,13 +79,22 @@ let tests =
     what_piece_test "13what_piece white queen" board_of_pieces 7 4 "♕";
     what_piece_test "14what_piece white bishop" board_of_pieces 7 5 "♗";
     what_piece_test "15what_piece white knight" board_of_pieces 7 6 "♘";
-    what_piece_test "16what_piece white rook" board_of_pieces 7 7 "♖"
-    (*what_piece_test "what_piece of removed black king" board_of_pieces 3 0
-      "_"; what_piece_test "what_piece of removed black pawn" board_of_pieces 1
-      3 "_"; what_piece_test "what_piece of removed nothing" board_of_pieces 4 3
-      "_"; what_piece_test "what_piece of removed white bishop" board_of_pieces
-      7 2 "_";*);
+    what_piece_test "16what_piece white rook" board_of_pieces 7 7 "♖";
   ]
 
-let suite = "test suite for chess" >::: List.flatten [ tests ]
+let move_tests = [ move_test "move white knight" board_of_pieces 7 6 5 5 ]
+
+(*let remove_tests = let removed_blk_king = remove_piece board_of_pieces 3 0 in
+  let removed_blk_pawn = remove_piece board_of_pieces 1 3 in let removed_nothing
+  = remove_piece board_of_pieces 4 3 in let removed_white_bishop = remove_piece
+  board_of_pieces 7 2 in [ what_piece_test "what_piece of removed black king"
+  board_of_pieces 3 0 "_"; what_piece_test "what_piece of removed black pawn"
+  board_of_pieces 1 3 "_"; what_piece_test "what_piece of removed nothing"
+  board_of_pieces 4 3 "_"; what_piece_test "what_piece of removed white bishop"
+  board_of_pieces 7 2 "_"; ]*)
+
+let suite =
+  "test suite for chess"
+  >::: List.flatten [ what_piece_tests; move_tests (*remove_tests*) ]
+
 let _ = run_test_tt_main suite
