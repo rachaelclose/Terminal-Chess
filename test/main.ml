@@ -97,11 +97,15 @@ let what_piece_tests =
 
 let move_piece_tests =
   [
-    move_piece_test "move white knight" board_of_pieces 7 6 5 5;
-    move_piece_test "move black bishop" board_of_pieces 0 2 1 3;
+    move_piece_test "move white knight left" board_of_pieces 7 6 5 5;
+    move_piece_test "move white knight right" board_of_pieces 7 6 5 7;
+    move_piece_test "move white knight right left" board_of_pieces 5 7 4 5;
+    move_piece_test "move black pawn" board_of_pieces 1 3 3 3;
     move_piece_test "move black bishop" board_of_pieces 0 2 1 3;
     move_piece_test "move black bishop again" board_of_pieces 1 3 2 4;
-    move_piece_test "move " board_of_pieces 1 3 2 4;
+    move_piece_test "move black bishop back" board_of_pieces 2 4 1 3;
+    move_piece_test "move white pawn" board_of_pieces 6 7 4 7;
+    move_piece_test "move white rook" board_of_pieces 7 7 3 7;
   ]
 
 let move_legal_tests =
@@ -124,15 +128,49 @@ let move_legal_tests =
     move_legal_test "move black pawn 2" board_of_pieces 1 2 2 2 true;
     move_legal_test "move black pawn 4" board_of_pieces 1 4 3 4 true;
     move_legal_test "move black pawn 5 illegal" board_of_pieces 1 5 3 5 false;
-    move_legal_test "move black pawn 5" board_of_pieces 1 5 2 5 false;
+    move_legal_test "move black pawn 5" board_of_pieces 1 5 2 5 true;
     move_legal_test "move black pawn 6" board_of_pieces 1 6 2 6 true;
     move_legal_test "move black pawn 7" board_of_pieces 1 7 3 7 true;
-    move_legal_test "move black rook" board_of_pieces 0 0 2 0 true;
-    move_legal_test "move black rook" board_of_pieces 2 0 1 0 true;
-    move_legal_test "move black rook" board_of_pieces 1 0 1 5 true;
-    move_legal_test "move black rook" board_of_pieces 1 5 2 5 false
-    (* at this point we're at
-       1n1qkbnr/5r2/2p2pp1/pp2pb1p/3p4/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1 *);
+    move_legal_test "move black rook 1" board_of_pieces 0 0 2 0 true;
+    move_legal_test "move black rook 2" board_of_pieces 2 0 1 0 true;
+    move_legal_test "move black rook 3" board_of_pieces 1 0 1 5 true;
+    move_legal_test "move black rook 4 illegal" board_of_pieces 1 5 2 5 false;
+    move_legal_test "move black knight illegal 1" board_of_pieces 0 1 0 1 false;
+    move_legal_test "move black knight illegal 2" board_of_pieces 0 1 0 3 false;
+    move_legal_test "move black knight illegal 3" board_of_pieces 0 1 2 2 false;
+    move_legal_test "move black knight" board_of_pieces 0 1 2 0 true;
+    move_legal_test "move black rook right illegal 1" board_of_pieces 0 7 0 0
+      false;
+    move_legal_test "move black rook right illegal 2" board_of_pieces 0 7 1 6
+      false;
+    move_legal_test "move black rook right" board_of_pieces 0 7 2 7 true;
+    move_legal_test "move black rook left" board_of_pieces 1 5 1 0 true;
+    move_legal_test "move black knight right" board_of_pieces 0 6 1 4 true;
+    move_legal_test "move black knight right illegal 1" board_of_pieces 1 4 1 4
+      false;
+    move_legal_test "move black knight right illegal 2" board_of_pieces 1 4 3 5
+      false;
+    move_legal_test "move black knight right illegal 3" board_of_pieces 1 4 3 3
+      true;
+    move_legal_test "move black bishop right illegal 1" board_of_pieces 0 5 2 7
+      false;
+    move_legal_test "move black bishop right illegal 2" board_of_pieces 0 5 0 4
+      false;
+    move_legal_test "move black bishop right illegal 3" board_of_pieces 0 5 0 7
+      false;
+    move_legal_test "move black bishop right illegal 4" board_of_pieces 0 5 1 0
+      false;
+    move_legal_test "move black bishop right illegal 5" board_of_pieces 0 5 2 5
+      false;
+    move_legal_test "move black bishop right 1" board_of_pieces 0 5 5 0 true;
+    move_legal_test "move black bishop right 2" board_of_pieces 5 0 6 1 true;
+    move_legal_test "move black bishop right 3" board_of_pieces 6 1 5 2 true;
+    move_legal_test "move black bishop right illegal 6" board_of_pieces 5 2 4 3
+      false;
+    move_legal_test "move black queen illegal 1" board_of_pieces 0 3 0 4 false;
+    move_legal_test "move black queen illegal 2" board_of_pieces 0 3 2 5 false;
+    move_legal_test "move black queen 1" board_of_pieces 0 3 0 0 true
+    (*keep working on queen, then king*);
   ]
 
 (*let remove_tests = let removed_blk_king = remove_piece board_of_pieces 3 0 in

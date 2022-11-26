@@ -37,7 +37,10 @@ let play_game = init
 (* let data_dir_prefix = "data" ^ Filename.dir_sep *)
 
 (** check method that checks if it is a valid input*)
-let s_int str index = int_of_char (String.get str index) - 48
+let row_int str index = 8 - (int_of_char (String.get str index) - 48)
+
+(** turns column letters to numbers *)
+let column_letter str index = int_of_char (String.get str index) - 97
 
 (** check method that checks if it is a valid input*)
 let parse board str =
@@ -45,11 +48,17 @@ let parse board str =
   match nstr with
   | [ h; t1; t2 ] ->
       if h = "move" then
-        let c1 = s_int t1 0 in
-        let c2 = s_int t1 1 in
-        let c3 = s_int t2 0 in
-        let c4 = s_int t2 1 in
-        move board c1 c2 c3 c4
+        let c1 = column_letter t1 0 in
+        let c2 = row_int t1 1 in
+        let c3 = column_letter t2 0 in
+        let c4 = row_int t2 1 in
+        move board c2 c1 c4 c3
+      else if h = "castle" then
+        let c1 = column_letter t1 0 in
+        let c2 = row_int t1 1 in
+        let c3 = column_letter t2 0 in
+        let c4 = row_int t2 1 in
+        castle board c2 c1 c4 c3
       else false
   | _ -> false
 
@@ -61,7 +70,7 @@ let game_end = false
 
 (* For checkmate: *)
 (* 1. check if <next_color>'s king is under check: if not return false*)
-(* 2. else return no_legal_moves*)
+(* 2. else return if no_legal_moves*)
 
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =

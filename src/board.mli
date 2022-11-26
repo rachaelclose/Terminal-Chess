@@ -17,3 +17,5 @@ val move : board -> int -> int -> int -> int -> bool
 (** [move piece_row piece_column destination_row destination_column] moves the piece at piece_row and piece_column to the location destination_row and destination_column*)
 val print_board : board -> unit
 (** [print_board board] prints out board*)
+val castle: board -> int -> int -> int -> int -> bool
+(** [castle board king_row king_col rook_row rook_col] castles the king and rook *)
