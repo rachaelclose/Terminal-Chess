@@ -19,3 +19,4 @@ val print_board : board -> unit
 (** [print_board board] prints out board*)
 val castle: board -> int -> int -> int -> int -> bool
 (** [castle board king_row king_col rook_row rook_col] castles the king and rook *)
+val board_of_game : unit

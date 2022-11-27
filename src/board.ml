@@ -161,19 +161,42 @@ let moves_except_outside arr =
   done;
   !new_inside_arr
 
+  let helper_king_knight board color r c =
+    match side_piece (what_piece board r c) with
+    | Nothing -> true
+    | White -> if color = White then false else true
+    | Black -> if color = Black then false else true
+
 (** [general_moves_knight r c] is an array of coordinates of general moves by a
     knight at row r and column c*)
-let general_moves_knight r c =
-  [|
-    (r - 2, c + 1);
-    (r - 1, c + 2);
-    (r + 1, c + 2);
-    (r + 2, c + 1);
-    (r + 2, c - 1);
-    (r + 1, c - 2);
-    (r - 1, c - 2);
-    (r - 2, c - 1);
-  |]
+let general_moves_knight board r c = 
+  let new_inside_arr = ref [||] in
+  let color = side_piece (what_piece board r c) in
+  if (r - 2 >= 0) && (c + 1 < 8) && helper_king_knight board color (r - 2) (c + 1) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c + 1))
+  else ();
+  if (r - 1 >= 0) && (c + 2 < 8) && helper_king_knight board color (r - 1) (c + 2) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c + 2))
+  else ();
+  if (r + 1 < 8) && (c + 2 < 8) && helper_king_knight board color (r + 1) (c + 2) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c + 2))
+  else ();
+  if (r + 2 < 8) && (c + 1 < 8) && helper_king_knight board color (r + 2) (c + 1) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c + 1))
+  else ();
+  if (r + 2 < 8) && (c - 1 >= 0) && helper_king_knight board color (r + 2) (c - 1) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c - 1))
+  else ();
+  if (r + 1 < 8) && (c - 2 >= 0) && helper_king_knight board color (r + 1) (c - 2) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c - 2))
+  else ();
+  if (r - 1 >= 0) && (c - 2 >= 0) && helper_king_knight board color (r - 1) (c - 2) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c - 2))
+  else ();
+  if (r - 2 >= 0) && (c - 1 >= 0) && helper_king_knight board color (r - 2) (c - 1) then
+    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c - 1))
+  else ();
+  !new_inside_arr
 
 (** [general_moves_bishop r c] is an array of coordinates of general moves by a
     bishop at row r and column c*)
@@ -517,7 +540,7 @@ let old_general_moves_king r c =
     (r + 2, c);
   |]
 
-let helper_king board color r c =
+let helper_king_knight board color r c =
   match side_piece (what_piece board r c) with
   | Nothing -> true
   | White -> if color = White then false else true
@@ -528,28 +551,28 @@ let helper_king board color r c =
 let general_moves_king board r c =
   let new_inside_arr = ref [||] in
   let color = side_piece (what_piece board r c) in
-  if helper_king board color r (c + 1) then
+  if helper_king_knight board color r (c + 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c + 1))
   else ();
-  if helper_king board color r (c - 1) then
+  if helper_king_knight board color r (c - 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c - 1))
   else ();
-  if helper_king board color (r + 1) c then
+  if helper_king_knight board color (r + 1) c then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c))
   else ();
-  if helper_king board color (r - 1) c then
+  if helper_king_knight board color (r - 1) c then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c))
   else ();
-  if helper_king board color (r + 1) (c + 1) then
+  if helper_king_knight board color (r + 1) (c + 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
   else ();
-  if helper_king board color (r - 1) (c - 1) then
+  if helper_king_knight board color (r - 1) (c - 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
   else ();
-  if helper_king board color (r + 1) (c - 1) then
+  if helper_king_knight board color (r + 1) (c - 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
   else ();
-  if helper_king board color (r - 1) (c + 1) then
+  if helper_king_knight board color (r - 1) (c + 1) then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
   else ();
   !new_inside_arr
@@ -557,7 +580,7 @@ let general_moves_king board r c =
 (** [legal_moves_knight r c] is an array of coordinates of legal moves by a
     knight at row r and column c *)
 let legal_moves_knight (board : piece array array) r c =
-  general_moves_knight r c |> moves_except_outside
+  general_moves_knight board r c |> moves_except_outside
 
 (** [legal_moves_bishop r c] is an array of coordinates of legal moves by a
     bishop at row r and column c *)
