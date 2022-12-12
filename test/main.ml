@@ -38,7 +38,7 @@ let what_piece_tests =
     what_piece_test "5what_piece black queen" board_of_pieces 0 4 "♛";
     what_piece_test "6what_piece black bishop" board_of_pieces 0 5 "♝";
     what_piece_test "7what_piece black knight" board_of_pieces 0 6 "♞";
-    what_piece_test "8what_piece black rook" board_of_pieces 0 0 "♜";
+    what_piece_test "8what_piece black rook" board_of_pieces 0 7 "♜";
     what_piece_test "9what_piece black pawn" board_of_pieces 1 0 "♟";
     what_piece_test "10what_piece black pawn" board_of_pieces 1 1 "♟";
     what_piece_test "11what_piece black pawn" board_of_pieces 1 2 "♟";

@@ -161,39 +161,47 @@ let moves_except_outside arr =
   done;
   !new_inside_arr
 
-  let helper_king_knight board color r c =
-    match side_piece (what_piece board r c) with
-    | Nothing -> true
-    | White -> if color = White then false else true
-    | Black -> if color = Black then false else true
+let helper_king_knight board color r c =
+  match side_piece (what_piece board r c) with
+  | Nothing -> true
+  | White -> if color = White then false else true
+  | Black -> if color = Black then false else true
 
 (** [general_moves_knight r c] is an array of coordinates of general moves by a
     knight at row r and column c*)
-let general_moves_knight board r c = 
+let general_moves_knight board r c =
   let new_inside_arr = ref [||] in
   let color = side_piece (what_piece board r c) in
-  if (r - 2 >= 0) && (c + 1 < 8) && helper_king_knight board color (r - 2) (c + 1) then
+  if r - 2 >= 0 && c + 1 < 8 && helper_king_knight board color (r - 2) (c + 1)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c + 1))
   else ();
-  if (r - 1 >= 0) && (c + 2 < 8) && helper_king_knight board color (r - 1) (c + 2) then
+  if r - 1 >= 0 && c + 2 < 8 && helper_king_knight board color (r - 1) (c + 2)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c + 2))
   else ();
-  if (r + 1 < 8) && (c + 2 < 8) && helper_king_knight board color (r + 1) (c + 2) then
+  if r + 1 < 8 && c + 2 < 8 && helper_king_knight board color (r + 1) (c + 2)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c + 2))
   else ();
-  if (r + 2 < 8) && (c + 1 < 8) && helper_king_knight board color (r + 2) (c + 1) then
+  if r + 2 < 8 && c + 1 < 8 && helper_king_knight board color (r + 2) (c + 1)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c + 1))
   else ();
-  if (r + 2 < 8) && (c - 1 >= 0) && helper_king_knight board color (r + 2) (c - 1) then
+  if r + 2 < 8 && c - 1 >= 0 && helper_king_knight board color (r + 2) (c - 1)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c - 1))
   else ();
-  if (r + 1 < 8) && (c - 2 >= 0) && helper_king_knight board color (r + 1) (c - 2) then
+  if r + 1 < 8 && c - 2 >= 0 && helper_king_knight board color (r + 1) (c - 2)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c - 2))
   else ();
-  if (r - 1 >= 0) && (c - 2 >= 0) && helper_king_knight board color (r - 1) (c - 2) then
+  if r - 1 >= 0 && c - 2 >= 0 && helper_king_knight board color (r - 1) (c - 2)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c - 2))
   else ();
-  if (r - 2 >= 0) && (c - 1 >= 0) && helper_king_knight board color (r - 2) (c - 1) then
+  if r - 2 >= 0 && c - 1 >= 0 && helper_king_knight board color (r - 2) (c - 1)
+  then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c - 1))
   else ();
   !new_inside_arr
@@ -451,6 +459,8 @@ let old_general_moves_pawn r c =
 
 let general_moves_pawn_white board new_inside_arr r c =
   if side_piece (what_piece board (r - 1) c) = Nothing then
+    (* Why is this r - 1? isn't the white side the side closest to us so it
+       should be +1?*)
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c));
   if
     r = 2
