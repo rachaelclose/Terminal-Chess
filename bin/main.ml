@@ -42,6 +42,9 @@ let row_int str index = 8 - (int_of_char (String.get str index) - 48)
 (** turns column letters to numbers *)
 let column_letter str index = int_of_char (String.get str index) - 97
 
+(** tells if someone won / game is done*)
+let game_end = ref false
+
 (** check method that checks if it is a valid input*)
 let parse board str =
   let nstr = String.split_on_char ' ' str |> List.filter (fun st -> st <> "") in
@@ -59,28 +62,43 @@ let parse board str =
         let c3 = column_letter t2 0 in
         let c4 = row_int t2 1 in
         castle board c2 c1 c4 c3
+      else if h = "en_passant" then
+        let c1 = column_letter t1 0 in
+        let c2 = row_int t1 1 in
+        let c3 = column_letter t2 0 in
+        let c4 = row_int t2 1 in
+        en_passant board c2 c1 c4 c3
+      else false
+  | [ h ] ->
+      if h = "withdraw" then (
+        game_end := true;
+        false)
+      else if h = "checkmate" then (
+        game_end := true;
+        false)
       else false
   | _ -> false
 
 (* add functions: is_checkmate; no_legal_moves_available;*)
 
-(** tells if someone won / game is done*)
-let game_end = false
 (* update turn to <next_color>*)
 
 (* For checkmate: *)
 (* 1. check if <next_color>'s king is under check: if not return false*)
 (* 2. else return if no_legal_moves*)
 
+
+
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =
   (* ANSITerminal.print_string [ ANSITerminal.black ] next_b; *)
-  print_board board;
+  if !whites_turn then print_board_white board else print_board_black board;
   (* change next_b to output of function that gives a string form of board*)
   let s = read_line () in
   let p = parse board s in
   if p then () else print_endline "Please give a valid input";
-  if game_end then print_endline "Congrats you won" else run_game board
+  if !game_end then print_endline "Player Checkmated or Withdrew. Game Over"
+  else run_game board
 (* match read_line () with | "move a7 a5" -> ANSITerminal.print_string [
    ANSITerminal.black ] next_b | _ -> ANSITerminal.print_string [
    ANSITerminal.black ] "Please give a valid command" *)

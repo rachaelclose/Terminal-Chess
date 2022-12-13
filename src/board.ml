@@ -18,8 +18,8 @@ type side =
 type piece = {
   rank : rank;
   side : side;
-  hasMoved : bool;
-  enPassant : bool;
+  mutable hasMoved : bool;
+  mutable enPassant : bool;
 }
 
 type square = {
@@ -47,8 +47,8 @@ let board_of_game =
   board_of_pieces.(0).(0) <- { black_pawn with rank = Rook };
   board_of_pieces.(0).(1) <- { black_pawn with rank = Knight };
   board_of_pieces.(0).(2) <- { black_pawn with rank = Bishop };
-  board_of_pieces.(0).(3) <- { black_pawn with rank = King };
-  board_of_pieces.(0).(4) <- { black_pawn with rank = Queen };
+  board_of_pieces.(0).(3) <- { black_pawn with rank = Queen };
+  board_of_pieces.(0).(4) <- { black_pawn with rank = King };
   board_of_pieces.(0).(5) <- { black_pawn with rank = Bishop };
   board_of_pieces.(0).(6) <- { black_pawn with rank = Knight };
   board_of_pieces.(0).(7) <- { black_pawn with rank = Rook };
@@ -66,8 +66,8 @@ let board_of_game =
   board_of_pieces.(7).(0) <- { pawn with rank = Rook };
   board_of_pieces.(7).(1) <- { pawn with rank = Knight };
   board_of_pieces.(7).(2) <- { pawn with rank = Bishop };
-  board_of_pieces.(7).(3) <- { pawn with rank = King };
-  board_of_pieces.(7).(4) <- { pawn with rank = Queen };
+  board_of_pieces.(7).(3) <- { pawn with rank = Queen };
+  board_of_pieces.(7).(4) <- { pawn with rank = King };
   board_of_pieces.(7).(5) <- { pawn with rank = Bishop };
   board_of_pieces.(7).(6) <- { pawn with rank = Knight };
   board_of_pieces.(7).(7) <- { pawn with rank = Rook }
@@ -84,6 +84,9 @@ let hasMoved_piece piece = piece.hasMoved
 (** allow access of piece's enPassant outside this file*)
 let enPassant_piece piece = piece.enPassant
 
+(** allow access to the White/Black's turn outside this file*)
+let whites_turn = ref true
+
 (* let set_pieces_in_space piece row_index column_index = function (Array.set
    (Array.get board_of_spaces row_index) column_index piece) row_index *)
 
@@ -96,9 +99,15 @@ let remove_piece (board : board) (row_index : int) (column_index : int) =
   Array.set board row_index new_row
 
 let place_piece (board : board) (piece : piece) (row_index : int)
-    (column_index : int) =
+    (column_index : int) (moved : bool) =
   let new_row = Array.copy (Array.get board row_index) in
-  Array.set new_row column_index piece;
+  Array.set new_row column_index { piece with hasMoved = moved };
+  Array.set board row_index new_row
+
+let set_en_passant (board : board) (row_index : int) (column_index : int) =
+  let new_row = Array.copy (Array.get board row_index) in
+  Array.set new_row column_index
+    { (what_piece board row_index column_index) with enPassant = true };
   Array.set board row_index new_row
 
 let matching piece =
@@ -123,7 +132,7 @@ let matching piece =
 let print_an_element piece = print_string (matching piece ^ " ")
 
 (** print the current board*)
-let print_board (board : piece array array) =
+let print_board_white (board : piece array array) =
   for i = 0 to 7 do
     print_string (string_of_int (8 - i) ^ " ");
     Array.iter (fun x -> print_an_element x) board.(i);
@@ -136,14 +145,16 @@ let print_board (board : piece array array) =
   ()
 
 let print_board_black (board : piece array array) =
-  for i = 0 to 7 do
-    print_string (string_of_int (i + 1) ^ " ");
-    Array.iter (fun x -> print_an_element x) board.(i);
+  for i = 7 downto 0 do
+    print_string (string_of_int (8 - i) ^ " ");
+    for j = 7 downto 0 do
+      print_an_element board.(i).(j)
+    done;
     print_endline ""
   done;
 
   print_string "  ";
-  print_string "a b c d e f g h ";
+  print_string "h g f e d c b a ";
   print_endline "";
 
   ()
@@ -208,38 +219,6 @@ let general_moves_knight board r c =
 
 (** [general_moves_bishop r c] is an array of coordinates of general moves by a
     bishop at row r and column c*)
-let old_general_moves_bishop r c =
-  [|
-    (r + 1, c + 1);
-    (r + 2, c + 2);
-    (r + 3, c + 3);
-    (r + 4, c + 4);
-    (r + 5, c + 5);
-    (r + 6, c + 6);
-    (r + 7, c + 7);
-    (r - 1, c - 1);
-    (r - 2, c - 2);
-    (r - 3, c - 3);
-    (r - 4, c - 4);
-    (r - 5, c - 5);
-    (r - 6, c - 6);
-    (r - 7, c - 7);
-    (r + 1, c - 1);
-    (r + 2, c - 2);
-    (r + 3, c - 3);
-    (r + 4, c - 4);
-    (r + 5, c - 5);
-    (r + 6, c - 6);
-    (r + 7, c - 7);
-    (r - 1, c + 1);
-    (r - 2, c + 2);
-    (r - 3, c + 3);
-    (r - 4, c + 4);
-    (r - 5, c + 5);
-    (r - 6, c + 6);
-    (r - 7, c + 7);
-  |]
-
 let general_moves_bishop board r c =
   let new_inside_arr = ref [||] in
   let color = (what_piece board r c).side in
@@ -331,38 +310,6 @@ let general_moves_bishop board r c =
 
 (** [general_moves_rook r c] is an array of coordinates of general moves by a
     rook at row r and column c*)
-let old_general_moves_rook r c =
-  [|
-    (r + 1, c);
-    (r + 2, c);
-    (r + 3, c);
-    (r + 4, c);
-    (r + 5, c);
-    (r + 6, c);
-    (r + 7, c);
-    (r - 1, c);
-    (r - 2, c);
-    (r - 3, c);
-    (r - 4, c);
-    (r - 5, c);
-    (r - 6, c);
-    (r - 7, c);
-    (r, c + 1);
-    (r, c + 2);
-    (r, c + 3);
-    (r, c + 4);
-    (r, c + 5);
-    (r, c + 6);
-    (r, c + 7);
-    (r, c - 1);
-    (r, c - 2);
-    (r, c - 3);
-    (r, c - 4);
-    (r, c - 5);
-    (r, c - 6);
-    (r, c - 7);
-  |]
-
 let general_moves_rook board r c =
   let new_inside_arr = ref [||] in
   let color = (what_piece board r c).side in
@@ -454,35 +401,34 @@ let general_moves_rook board r c =
 
 (** [general_moves_pawn r c] is an array of coordinates of general moves by a
     pawn at row r and column c*)
-let old_general_moves_pawn r c =
-  [| (r, c + 1); (r, c + 2); (r - 1, c + 1); (r + 1, c + 1) |]
-
 let general_moves_pawn_white board new_inside_arr r c =
   if side_piece (what_piece board (r - 1) c) = Nothing then
-    (* Why is this r - 1? isn't the white side the side closest to us so it
-       should be +1?*)
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c));
   if
-    r = 2
+    r = 6
     && side_piece (what_piece board (r - 1) c) = Nothing
     && side_piece (what_piece board (r - 2) c) = Nothing
-  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c));
-  if r <> 2 then (
-    let right =
-      match side_piece (what_piece board (r - 1) (c - 1)) with
-      | White -> ()
-      | Black ->
-          new_inside_arr :=
-            Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
-      | Nothing -> ()
-    in
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c))
+  else if r <> 6 then (
     let left =
-      match side_piece (what_piece board (r - 1) (c + 1)) with
-      | White -> ()
-      | Black ->
-          new_inside_arr :=
-            Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
-      | Nothing -> ()
+      if c - 1 >= 0 then
+        match side_piece (what_piece board (r - 1) (c - 1)) with
+        | White -> ()
+        | Black ->
+            new_inside_arr :=
+              Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
+        | Nothing -> ()
+      else ()
+    in
+    let right =
+      if c + 1 < 8 then
+        match side_piece (what_piece board (r - 1) (c + 1)) with
+        | White -> ()
+        | Black ->
+            new_inside_arr :=
+              Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
+        | Nothing -> ()
+      else ()
     in
     right;
     left)
@@ -491,41 +437,101 @@ let general_moves_pawn_black board new_inside_arr r c =
   if side_piece (what_piece board (r + 1) c) = Nothing then
     new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c));
   if
-    r = 7
+    r = 1
     && side_piece (what_piece board (r + 1) c) = Nothing
     && side_piece (what_piece board (r + 2) c) = Nothing
-  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c));
-  if r <> 7 then (
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c))
+  else if r <> 1 then (
     let right =
-      match side_piece (what_piece board (r + 1) (c + 1)) with
-      | White ->
-          new_inside_arr :=
-            Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
-      | Black -> ()
-      | Nothing -> ()
+      if c + 1 < 8 then
+        match side_piece (what_piece board (r + 1) (c + 1)) with
+        | White ->
+            new_inside_arr :=
+              Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
+        | Black -> ()
+        | Nothing -> ()
+      else ()
     in
     let left =
-      match side_piece (what_piece board (r + 1) (c - 1)) with
-      | White ->
-          new_inside_arr :=
-            Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
-      | Black -> ()
-      | Nothing -> ()
+      if c - 1 >= 0 then
+        match side_piece (what_piece board (r + 1) (c - 1)) with
+        | White ->
+            new_inside_arr :=
+              Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
+        | Black -> ()
+        | Nothing -> ()
+      else ()
     in
     right;
     left)
 
-let en_passant board new_inside_arr r c =
-  let color = side_piece (what_piece board r c) in
-  let right_piece = what_piece board r (c + 1) in
-  let left_piece = what_piece board r (c - 1) in
-  if (r <= 4 && color = Black) || (r >= 5 && color = White) then
-    if side_piece right_piece <> color && enPassant_piece right_piece = true
-    then
-      new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c + 1));
-  if side_piece left_piece <> color && enPassant_piece left_piece = true then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c - 1));
+let reset_turns_en_passant board whites_turn_bool =
+  for i = 0 to 7 do
+    for j = 0 to 7 do
+      let target = what_piece board i j in
+      if
+        target.side = White = whites_turn_bool
+        && target.rank = Pawn && target.enPassant = true
+      then board.(i).(j) <- { target with enPassant = false }
+    done
+  done;
   ()
+
+let en_passant board ini_row ini_col dest_row dest_col =
+  let initial = what_piece board ini_row ini_col in
+  let color = side_piece (what_piece board ini_row ini_col) in
+  match color with
+  | White ->
+      if dest_row - ini_row = -1 && dest_col - ini_col = 1 then
+        let target = what_piece board ini_row (ini_col + 1) in
+        if side_piece target <> color && target.enPassant then (
+          remove_piece board ini_row ini_col;
+          remove_piece board ini_row (ini_col + 1);
+          place_piece board initial dest_row dest_col true;
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+      else if dest_row - ini_row = -1 && dest_col - ini_col = -1 then
+        let target = what_piece board ini_row (ini_col - 1) in
+        if side_piece target <> color && target.enPassant then (
+          remove_piece board ini_row ini_col;
+          remove_piece board ini_row (ini_col - 1);
+          place_piece board initial dest_row dest_col true;
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+      else false
+  | Black ->
+      if dest_row - ini_row = 1 && dest_col - ini_col = 1 then
+        let target = what_piece board ini_row (ini_col + 1) in
+        if side_piece target <> color && target.enPassant then (
+          remove_piece board ini_row ini_col;
+          remove_piece board ini_row (ini_col + 1);
+          place_piece board initial dest_row dest_col true;
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+      else if dest_row - ini_row = 1 && dest_col - ini_col = -1 then
+        let target = what_piece board ini_row (ini_col - 1) in
+        if side_piece target <> color && target.enPassant then (
+          remove_piece board ini_row ini_col;
+          remove_piece board ini_row (ini_col - 1);
+          place_piece board initial dest_row dest_col true;
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+      else false
+  | Nothing -> false
+
+(* if (dest_row - ini_row = 1) && (dest_col - ini_col = 1) then (let target =
+   (what_piece board ini_row (ini_col + 1)) in if (side_piece target) <> color
+   && target.enPassant) then remove_piece board ini_row ini_col; remove_piece
+   board ini_row (ini_col + 1); place_piece board initial dest_row dest_col
+   true; true) else if dest_row - ini_row = 1 && dest_col - ini_col = -1 then *)
 
 let general_moves_pawn board r c =
   let new_inside_arr = ref [||] in
@@ -536,55 +542,18 @@ let general_moves_pawn board r c =
 
 (** [general_moves_king r c] is an array of coordinates of general moves by a
     king at row r and column c *)
-let old_general_moves_king r c =
-  [|
-    (r, c + 1);
-    (r, c - 1);
-    (r + 1, c);
-    (r - 1, c);
-    (r + 1, c + 1);
-    (r - 1, c - 1);
-    (r + 1, c - 1);
-    (r - 1, c + 1);
-    (r - 2, c);
-    (r + 2, c);
-  |]
-
-let helper_king_knight board color r c =
-  match side_piece (what_piece board r c) with
-  | Nothing -> true
-  | White -> if color = White then false else true
-  | Black -> if color = Black then false else true
-
-(** [general_moves_king r c] is an array of coordinates of general moves by a
-    king at row r and column c *)
 let general_moves_king board r c =
   let new_inside_arr = ref [||] in
   let color = side_piece (what_piece board r c) in
-  if helper_king_knight board color r (c + 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c + 1))
-  else ();
-  if helper_king_knight board color r (c - 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r, c - 1))
-  else ();
-  if helper_king_knight board color (r + 1) c then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c))
-  else ();
-  if helper_king_knight board color (r - 1) c then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c))
-  else ();
-  if helper_king_knight board color (r + 1) (c + 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
-  else ();
-  if helper_king_knight board color (r - 1) (c - 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
-  else ();
-  if helper_king_knight board color (r + 1) (c - 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
-  else ();
-  if helper_king_knight board color (r - 1) (c + 1) then
-    new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
-  else ();
+  for row = max (r - 1) 0 to min (r + 1) 7 do
+    for column = max (c - 1) 0 to min (c + 1) 7 do
+      if row = r && column = c then ()
+      else if helper_king_knight board color row column then
+        new_inside_arr :=
+          Array.append !new_inside_arr (Array.make 1 (row, column))
+      else ()
+    done
+  done;
   !new_inside_arr
 
 (** [legal_moves_knight r c] is an array of coordinates of legal moves by a
@@ -621,11 +590,11 @@ let legal_moves_queen (board : piece array array) r c =
       (total_length_for_bishop_array + total_length_for_rook_array)
       (r, c)
   in
-  for i = 0 to total_length_for_bishop_array do
+  for i = 0 to total_length_for_bishop_array - 1 do
     array.(i) <- (general_moves_bishop board r c).(i)
   done;
-  for j = 0 to total_length_for_rook_array do
-    array.(j + total_length_for_bishop_array + 1) <-
+  for j = 0 to total_length_for_rook_array - 1 do
+    array.(j + total_length_for_bishop_array) <-
       (general_moves_rook board r c).(j)
   done;
   array |> moves_except_outside
@@ -698,8 +667,7 @@ let find_king board side =
   done;
   !value
 
-let is_king_in_check board (side : side) (piece_row : int) (piece_column : int)
-    =
+let is_king_in_check board (side : side) =
   let king_coord = find_king board side in
   is_under_attack board (fst king_coord) (snd king_coord)
 
@@ -711,53 +679,98 @@ let move_piece board legal_moves (piece_row : int) (piece_column : int)
       (legal_moves board piece_row piece_column)
   then (
     let mov_piece = what_piece board piece_row piece_column in
-
+    let captured_piece = what_piece board destination_row destination_column in
     remove_piece board piece_row piece_column;
-    place_piece board mov_piece destination_row destination_column;
-    true)
+    place_piece board mov_piece destination_row destination_column true;
+    if is_king_in_check board (side_piece mov_piece) then (
+      remove_piece board destination_row destination_column;
+      place_piece board captured_piece destination_row destination_column
+        captured_piece.hasMoved;
+      place_piece board mov_piece piece_row piece_column mov_piece.hasMoved;
+      false)
+    else (
+      if
+        (what_piece board destination_row destination_column).rank = Pawn
+        && abs (destination_row - piece_row) = 2
+      then set_en_passant board destination_row destination_column;
+      true))
   else false
-(* ^^ Prob in this function.. Check if king is under attack?*)
 
 (** master function for chess move*)
 let move board (piece_row : int) (piece_column : int) (destination_row : int)
     (destination_column : int) =
-  let piece =
-    { (what_piece board piece_row piece_column) with hasMoved = true }
-  in
-  match rank_piece piece with
-  | Knight ->
-      move_piece board legal_moves_knight piece_row piece_column destination_row
-        destination_column
-  | Bishop ->
-      move_piece board legal_moves_bishop piece_row piece_column destination_row
-        destination_column
-  | Rook ->
-      move_piece board legal_moves_rook piece_row piece_column destination_row
-        destination_column
-  | King ->
-      move_piece board legal_moves_king piece_row piece_column destination_row
-        destination_column
-  | Queen ->
-      move_piece board legal_moves_queen piece_row piece_column destination_row
-        destination_column
-  | Pawn ->
-      move_piece board legal_moves_pawn piece_row piece_column destination_row
-        destination_column
-  | _ ->
-      move_piece board legal_moves_knight piece_row piece_column destination_row
-        destination_column
+  if
+    side_piece (what_piece board piece_row piece_column) = White
+    && !whites_turn
+    || side_piece (what_piece board piece_row piece_column) = Black
+       && !whites_turn = false
+  then
+    let piece =
+      { (what_piece board piece_row piece_column) with hasMoved = true }
+    in
+    match rank_piece piece with
+    | Knight ->
+        if
+          move_piece board legal_moves_knight piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | Bishop ->
+        if
+          move_piece board legal_moves_bishop piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | Rook ->
+        if
+          move_piece board legal_moves_rook piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | King ->
+        if
+          move_piece board legal_moves_king piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | Queen ->
+        if
+          move_piece board legal_moves_queen piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | Pawn ->
+        if
+          move_piece board legal_moves_pawn piece_row piece_column
+            destination_row destination_column
+        then (
+          whites_turn := not !whites_turn;
+          reset_turns_en_passant board !whites_turn;
+          true)
+        else false
+    | _ -> false
+  else false
 
-let castle board (king_row : int) (king_col : int) (rook_row : int)
-    (rook_col : int) =
-  (* false if the color of king and rook are different from color of the current
-     turn -> look up current_turn field in state.ml*)
-
+let castle_helper board m_king m_rook king_row king_col rook_row rook_col =
   (* false if piece in given coordinates are not king and then rook*)
-  let maybe_king = what_piece board king_row king_col in
-  let maybe_rook = what_piece board rook_row rook_col in
-  if maybe_king.rank <> King || maybe_rook.rank <> Rook then false
+  if m_king.rank <> King || m_rook.rank <> Rook then false
     (* false if king and rook already moved*)
-  else if hasMoved_piece maybe_king || hasMoved_piece maybe_rook then false
+  else if hasMoved_piece m_king || hasMoved_piece m_rook then false
     (*false if there are any pieces between king and rook*)
   else
     let any_piece_btwn = ref false in
@@ -769,15 +782,75 @@ let castle board (king_row : int) (king_col : int) (rook_row : int)
     if !any_piece_btwn then false
       (*false if king is in check or king passes through check*)
     else if Int.max king_col rook_col = king_col then (
-      remove_piece board king_row king_col;
-      place_piece board maybe_king king_row (king_col - 2);
-      remove_piece board rook_row rook_col;
-      place_piece board maybe_rook rook_row (rook_col + 3);
-      true)
+      let in_or_pass_check = ref false in
+      for i = king_col downto king_col - 2 do
+        if is_king_in_check board m_king.side then in_or_pass_check := true
+        else ();
+        if i <> king_col - 2 then
+          (remove_piece board king_row i;
+           place_piece board m_king king_row (i - 1))
+            m_king.hasMoved
+          (*can't tell if ur actually movign the king. if u are, change this to
+            true! if u aren't, u probably want to move the king back (remove and
+            place)*)
+        else ()
+      done;
+      if !in_or_pass_check then false
+      else (
+        remove_piece board rook_row rook_col;
+        place_piece board m_rook rook_row (rook_col + 3) true;
+        (*if the above king didnt' move then add a place_piece with last input
+          true here!*)
+        m_king.hasMoved <- true;
+        m_rook.hasMoved <- true;
+        true))
     else if Int.max king_col rook_col = rook_col then (
-      remove_piece board king_row king_col;
-      place_piece board maybe_king king_row (king_col + 2);
-      remove_piece board rook_row rook_col;
-      place_piece board maybe_rook rook_row (rook_col - 2);
+      let in_or_pass_check = ref false in
+      for i = king_col to king_col + 2 do
+        if is_king_in_check board m_king.side then in_or_pass_check := true
+        else ();
+        if i <> king_col + 2 then
+          (remove_piece board king_row i;
+           place_piece board m_king king_row (i + 1))
+            true
+          (*can't tell if ur actually movign the king. if u are, change this to
+            true! if u aren't, you probalby want to move the king back (remove
+            and place)*)
+        else ()
+      done;
+      if !in_or_pass_check then false
+      else (
+        remove_piece board rook_row rook_col;
+        place_piece board m_rook rook_row (rook_col - 2) true;
+        (*if the above king didnt' move then add a place_piece with last input
+          true here!*)
+        m_king.hasMoved <- true;
+        m_rook.hasMoved <- true;
+        true))
+    else false
+
+let castle board (king_row : int) (king_col : int) (rook_row : int)
+    (rook_col : int) =
+  let maybe_king = what_piece board king_row king_col in
+  let maybe_rook = what_piece board rook_row rook_col in
+  (* false if the color of king and rook are different from color of the current
+     turn*)
+  if !whites_turn then
+    if maybe_king.side <> White || maybe_rook.side <> White then false
+    else if
+      castle_helper board maybe_king maybe_rook king_row king_col rook_row
+        rook_col
+    then (
+      whites_turn := not !whites_turn;
+      reset_turns_en_passant board !whites_turn;
       true)
     else false
+  else if maybe_king.side <> Black || maybe_rook.side <> Black then false
+  else if
+    castle_helper board maybe_king maybe_rook king_row king_col rook_row
+      rook_col
+  then (
+    whites_turn := not !whites_turn;
+    reset_turns_en_passant board !whites_turn;
+    true)
+  else false

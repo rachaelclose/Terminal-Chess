@@ -25,17 +25,19 @@ let move_piece_test (name : string) (board : board) (orow : int) (ocol : int)
 let move_legal_test (name : string) (board : board) (orow : int) (ocol : int)
     (drow : int) (dcol : int) (expected_output : bool) : test =
   name >:: fun _ ->
-  assert_equal expected_output (move board orow ocol drow dcol)
+  assert_equal expected_output
+    (move board orow ocol drow dcol)
+    ~printer:string_of_bool
 
-let legal_test = board_of_pieces
+(* let legal_test = board_of_pieces *)
 
 let what_piece_tests =
   [
     what_piece_test "1what_piece black rook" board_of_pieces 0 0 "♜";
     what_piece_test "2what_piece black knight" board_of_pieces 0 1 "♞";
     what_piece_test "3what_piece black bishop" board_of_pieces 0 2 "♝";
-    what_piece_test "4what_piece black king" board_of_pieces 0 3 "♚";
-    what_piece_test "5what_piece black queen" board_of_pieces 0 4 "♛";
+    what_piece_test "4what_piece black king" board_of_pieces 0 4 "♚";
+    what_piece_test "5what_piece black queen" board_of_pieces 0 3 "♛";
     what_piece_test "6what_piece black bishop" board_of_pieces 0 5 "♝";
     what_piece_test "7what_piece black knight" board_of_pieces 0 6 "♞";
     what_piece_test "8what_piece black rook" board_of_pieces 0 7 "♜";
@@ -90,8 +92,8 @@ let what_piece_tests =
     what_piece_test "9what_piece white rook" board_of_pieces 7 0 "♖";
     what_piece_test "10what_piece white knight" board_of_pieces 7 1 "♘";
     what_piece_test "11what_piece white bishop" board_of_pieces 7 2 "♗";
-    what_piece_test "12what_piece white king" board_of_pieces 7 3 "♔";
-    what_piece_test "13what_piece white queen" board_of_pieces 7 4 "♕";
+    what_piece_test "12what_piece white king" board_of_pieces 7 4 "♔";
+    what_piece_test "13what_piece white queen" board_of_pieces 7 3 "♕";
     what_piece_test "14what_piece white bishop" board_of_pieces 7 5 "♗";
     what_piece_test "15what_piece white knight" board_of_pieces 7 6 "♘";
     what_piece_test "16what_piece white rook" board_of_pieces 7 7 "♖";
@@ -99,15 +101,16 @@ let what_piece_tests =
 
 let move_piece_tests =
   [
-    move_piece_test "move white knight left" board_of_pieces 7 6 5 5;
-    move_piece_test "move white knight right" board_of_pieces 7 6 5 7;
-    move_piece_test "move white knight right left" board_of_pieces 5 7 4 5;
-    move_piece_test "move black pawn" board_of_pieces 1 3 3 3;
-    move_piece_test "move black bishop" board_of_pieces 0 2 1 3;
-    move_piece_test "move black bishop again" board_of_pieces 1 3 2 4;
-    move_piece_test "move black bishop back" board_of_pieces 2 4 1 3;
-    move_piece_test "move white pawn" board_of_pieces 6 7 4 7;
-    move_piece_test "move white rook" board_of_pieces 7 7 3 7;
+    move_piece_test "moved white knight left" board_of_pieces 7 6 5 5;
+    move_piece_test "moved white knight right" board_of_pieces 7 6 5 7;
+    move_piece_test "moved white knight right left" board_of_pieces 5 7 4 5;
+    move_piece_test "moved black pawn" board_of_pieces 1 3 3 3;
+    move_piece_test "moved black bishop" board_of_pieces 0 2 1 3;
+    move_piece_test "moved black bishop again" board_of_pieces 1 3 2 4;
+    move_piece_test "moved black bishop back" board_of_pieces 2 4 1 3;
+    move_piece_test "moved white pawn" board_of_pieces 6 7 4 7;
+    move_piece_test "moved white rook" board_of_pieces 7 7 3 7;
+    move_piece_test "moved white rook" board_of_pieces 7 7 3 7;
   ]
 
 let reset _ = board_of_game
@@ -118,6 +121,7 @@ let move_legal_tests =
     move_legal_test "move black rook illegal" board_of_pieces 0 0 1 0 false;
     move_legal_test "move white knight illegal" board_of_pieces 5 5 4 6 false;
     move_legal_test "move white knight illegal 2!" board_of_pieces 5 5 7 4 false;
+    (*possibly an error*)
     move_legal_test "move black bishop illegal" board_of_pieces 0 2 1 3 false;
     move_legal_test "double move black pawn" board_of_pieces 1 3 3 3 true;
     move_legal_test "move black pawn illegal" board_of_pieces 3 3 5 3 false;
@@ -131,7 +135,8 @@ let move_legal_tests =
     move_legal_test "move black pawn 2" board_of_pieces 1 2 0 2 false;
     move_legal_test "move black pawn 2" board_of_pieces 1 2 2 2 true;
     move_legal_test "move black pawn 4" board_of_pieces 1 4 3 4 true;
-    move_legal_test "move black pawn 5 illegal" board_of_pieces 1 5 3 5 false;
+    move_legal_test "move black pawn 5 double" board_of_pieces 1 5 3 5 true;
+    (*possibly an error*)
     move_legal_test "move black pawn 5" board_of_pieces 1 5 2 5 true;
     move_legal_test "move black pawn 6" board_of_pieces 1 6 2 6 true;
     move_legal_test "move black pawn 7" board_of_pieces 1 7 3 7 true;
