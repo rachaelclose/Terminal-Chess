@@ -20,6 +20,12 @@ val side_piece : piece -> side
 val matching : piece -> string
 (** [matching piece] matches piece with the corresponding representing charater*)
 
+val unmatching : string -> piece
+(** [unmatching char] matches char containing a chess character with a piece*)
+
+val match_side : side -> string
+(** [match_side side] matches side with the corresponding representing string*)
+
 val move : board -> int -> int -> int -> int -> bool
 (** [move piece_row piece_column destination_row destination_column] moves the
     piece at piece_row and piece_column to the location destination_row and

@@ -40,10 +40,10 @@ let space =
   { rank = Nothing; side = Nothing; hasMoved = false; enPassant = false }
 
 let pawn = { rank = Pawn; side = White; hasMoved = false; enPassant = false }
+let black_pawn = { pawn with side = Black }
 let board_of_pieces = Array.make_matrix 8 8 pawn
 
 let board_of_game =
-  let black_pawn = { pawn with side = Black } in
   board_of_pieces.(0).(0) <- { black_pawn with rank = Rook };
   board_of_pieces.(0).(1) <- { black_pawn with rank = Knight };
   board_of_pieces.(0).(2) <- { black_pawn with rank = Bishop };
@@ -127,6 +127,27 @@ let matching piece =
   | Queen, Black -> "♛"
   | King, Black -> "♚"
   | _ -> "_"
+
+let unmatching char =
+  match char with
+  | "♙" -> pawn
+  | "♗" -> { pawn with rank = Bishop }
+  | "♘" -> { pawn with rank = Knight }
+  | "♖" -> { pawn with rank = Rook }
+  | "♕" -> { pawn with rank = Queen }
+  | "♟" -> black_pawn
+  | "♝" -> { black_pawn with rank = Bishop }
+  | "♞" -> { black_pawn with rank = Knight }
+  | "♜" -> { black_pawn with rank = Rook }
+  | "♛" -> { black_pawn with rank = Queen }
+  | "♚" -> { black_pawn with rank = King }
+  | _ -> space
+
+let match_side side =
+  match side with
+  | White -> "white"
+  | Black -> "black"
+  | Nothing -> "none"
 
 (** print a single piece's letter*)
 let print_an_element piece = print_string (matching piece ^ " ")
@@ -782,48 +803,46 @@ let castle_helper board m_king m_rook king_row king_col rook_row rook_col =
     if !any_piece_btwn then false
       (*false if king is in check or king passes through check*)
     else if Int.max king_col rook_col = king_col then (
+      (*case 1: rook --- king *)
       let in_or_pass_check = ref false in
       for i = king_col downto king_col - 2 do
         if is_king_in_check board m_king.side then in_or_pass_check := true
         else ();
-        if i <> king_col - 2 then
-          (remove_piece board king_row i;
-           place_piece board m_king king_row (i - 1))
-            m_king.hasMoved
-          (*can't tell if ur actually movign the king. if u are, change this to
-            true! if u aren't, u probably want to move the king back (remove and
-            place)*)
+        if i <> king_col - 2 then (
+          remove_piece board king_row i;
+          place_piece board m_king king_row (i - 1) true)
         else ()
       done;
-      if !in_or_pass_check then false
+      if !in_or_pass_check then (
+        (*case 1 in/pass check: undo moving king*)
+        remove_piece board king_row (king_col - 2);
+        place_piece board m_king king_row king_col false;
+        false)
       else (
         remove_piece board rook_row rook_col;
         place_piece board m_rook rook_row (rook_col + 3) true;
-        (*if the above king didnt' move then add a place_piece with last input
-          true here!*)
         m_king.hasMoved <- true;
         m_rook.hasMoved <- true;
         true))
     else if Int.max king_col rook_col = rook_col then (
+      (*case 2: king --- rook*)
       let in_or_pass_check = ref false in
       for i = king_col to king_col + 2 do
         if is_king_in_check board m_king.side then in_or_pass_check := true
         else ();
-        if i <> king_col + 2 then
-          (remove_piece board king_row i;
-           place_piece board m_king king_row (i + 1))
-            true
-          (*can't tell if ur actually movign the king. if u are, change this to
-            true! if u aren't, you probalby want to move the king back (remove
-            and place)*)
+        if i <> king_col + 2 then (
+          remove_piece board king_row i;
+          place_piece board m_king king_row (i + 1) true)
         else ()
       done;
-      if !in_or_pass_check then false
+      if !in_or_pass_check then (
+        (*case 2 in/pass check: undo moving king*)
+        remove_piece board king_row (king_col + 2);
+        place_piece board m_king king_row king_col false;
+        false)
       else (
         remove_piece board rook_row rook_col;
         place_piece board m_rook rook_row (rook_col - 2) true;
-        (*if the above king didnt' move then add a place_piece with last input
-          true here!*)
         m_king.hasMoved <- true;
         m_rook.hasMoved <- true;
         true))
