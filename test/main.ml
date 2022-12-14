@@ -19,7 +19,9 @@ let what_piece_test (name : string) (board : board) (row : int) (col : int)
 let side_piece_test (name : string) (char : string) (expected_output : string) :
     test =
   name >:: fun _ ->
-  assert_equal expected_output (unmatching char |> side_piece |> match_side)
+  assert_equal expected_output
+    (unmatching char |> side_piece |> match_side)
+    ~printer:(fun x -> x)
 
 let move_piece_test (name : string) (board : board) (orow : int) (ocol : int)
     (drow : int) (dcol : int) : test =
@@ -131,21 +133,6 @@ let reset (test : test) =
   board_of_game;
   test
 
-let move_piece_tests =
-  [
-    reset (move_piece_test "moved white knight left" board_of_pieces 7 6 5 5);
-    move_piece_test "moved white knight right" board_of_pieces 7 6 5 7;
-    move_piece_test "moved white knight right left" board_of_pieces 5 7 4 5;
-    move_piece_test "moved black pawn" board_of_pieces 1 3 3 3;
-    move_piece_test "moved black bishop" board_of_pieces 0 2 1 3;
-    move_piece_test "moved black bishop again" board_of_pieces 1 3 2 4;
-    move_piece_test "moved black bishop back" board_of_pieces 2 4 1 3;
-    move_piece_test "moved white pawn" board_of_pieces 6 7 4 7;
-    move_piece_test "moved white rook" board_of_pieces 7 7 3 7;
-    move_piece_test "moved black pawn up 1" board_of_pieces 1 5 2 5;
-    reset (move_piece_test "moved white king" board_of_pieces 7 7 3 7);
-  ]
-
 let en_passant_tests =
   [
     (*en_passant works*)
@@ -189,10 +176,11 @@ let en_passant_tests =
       "_";
   ]
 
-let move_legal_tests =
+let move_legal_and_illegal_tests =
   [
-    move_legal_test "move white pawn 0 one space legal" board_of_pieces 6 0 5 0
-      true;
+    reset
+      (move_legal_test "move white pawn 0 one space legal" board_of_pieces 6 0 5
+         0 true);
     reset
       (move_legal_test "move white pawn 1 one space legal" board_of_pieces 6 1 5
          1 true);
@@ -1091,7 +1079,10 @@ let suite =
   "test suite for chess"
   >::: List.flatten
          [
-           what_piece_tests; move_piece_tests; move_legal_tests (*remove_tests*);
+           what_piece_tests;
+           side_piece_tests;
+           en_passant_tests;
+           move_legal_and_illegal_tests (*remove_tests*);
          ]
 
 let _ = run_test_tt_main suite

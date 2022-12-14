@@ -135,6 +135,7 @@ let unmatching char =
   | "♘" -> { pawn with rank = Knight }
   | "♖" -> { pawn with rank = Rook }
   | "♕" -> { pawn with rank = Queen }
+  | "♔" -> { pawn with rank = King }
   | "♟" -> black_pawn
   | "♝" -> { black_pawn with rank = Bishop }
   | "♞" -> { black_pawn with rank = Knight }

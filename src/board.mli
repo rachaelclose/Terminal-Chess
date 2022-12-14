@@ -8,7 +8,7 @@ val what_piece : board -> int -> int -> piece
     column_index in board*)
 
 val board_of_pieces : board
-(** [board_of_piece] is a board consisting of all the chess pieces in the
+(** [board_of_pieces] is a board consisting of all the chess pieces in the
     correct ordering and placement*)
 
 val rank_piece : piece -> rank
