@@ -72,10 +72,20 @@ let parse board str =
   | [ h ] ->
       if h = "withdraw" then (
         game_end := true;
-        false)
+        true)
       else if h = "checkmate" then (
         game_end := true;
-        false)
+        true)
+      else if h = "help" then (
+        print_endline
+          "Commands: move c#1 c#2 where c is a char a to h and # is a number 1 \
+           to 8 and c#1 represents the current row and column and c#2 \
+           represents the destination row and column\n\
+          \          castle kcr rcr where kcr is the king's column and row in \
+           the format c# and rcr is the rook's column and row in the format c#\n\
+          \          en_passant c#1 c#2 where c#1 is the current row and \
+           column and c#2 is the destination row and column";
+        true)
       else false
   | _ -> false
 
@@ -86,8 +96,6 @@ let parse board str =
 (* For checkmate: *)
 (* 1. check if <next_color>'s king is under check: if not return false*)
 (* 2. else return if no_legal_moves*)
-
-
 
 (* [run_game] takes in a user_input to run the game. *)
 let rec run_game board =

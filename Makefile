@@ -31,6 +31,10 @@ clean:
 	dune clean
 	rm -f chess.zip
 
+lines:
+	cloc --by-file --include-lang=OCaml .
+
+
 doc:
 	dune build @doc
 
