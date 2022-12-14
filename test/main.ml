@@ -148,6 +148,7 @@ let move_piece_tests =
 
 let en_passant_tests =
   [
+    (*en_passant works*)
     reset
       (move_piece_test "move white pawn 63 to 43 (d2 to d4)" board_of_pieces 6 3
          4 3);
@@ -156,10 +157,35 @@ let en_passant_tests =
     move_piece_test "move white pawn 1 more (d4 to d5)" board_of_pieces 4 3 3 3;
     move_piece_test "move black pawn 14 to 34 (e7 to e5) " board_of_pieces 1 4 3
       4;
-    en_passant_test "check if white pawn em_passanted black pawn (d5 to e6)"
+    en_passant_test "check if white pawn em_passants black pawn (d5 to e6)"
       board_of_pieces 3 3 2 4 true;
     what_piece_test "white pawn should be at 24 (e6)" board_of_pieces 2 4 "♙";
     what_piece_test "black pawn should not be at 34 (e5)" board_of_pieces 3 4
+      "_";
+    (*en_passant doesn’t work*)
+    reset
+      (move_piece_test "move white pawn 63 to 43 (d2 to d4)" board_of_pieces 6 3
+         4 3);
+    move_piece_test "move black pawn 12 to 32 (c7 to c5) " board_of_pieces 1 2 3
+      2;
+    move_piece_test "move white pawn 1 more (d4 to d5)" board_of_pieces 4 3 3 3;
+    en_passant_test
+      "check to make sure black pawn doesn’t em_passant white pawn (no c5 to \
+       d4)"
+      board_of_pieces 3 2 4 3 false;
+    (*en_passant work with front blocked*)
+    reset
+      (move_piece_test "move white pawn 66 to 46 (g2 to g4)" board_of_pieces 6 6
+         4 6);
+    move_piece_test "move black pawn 16 to 26 (g7 to g6) " board_of_pieces 1 6 2
+      6;
+    move_piece_test "move white pawn 1 more (g4 to g5)" board_of_pieces 4 6 3 6;
+    move_piece_test "move black pawn 15 to 35 (f7 to f5) " board_of_pieces 1 5 3
+      5;
+    en_passant_test "check if white pawn em_passants black pawn (g5 to f6)"
+      board_of_pieces 3 6 2 5 true;
+    what_piece_test "white pawn should be at 25 (f6)" board_of_pieces 2 5 "♙";
+    what_piece_test "black pawn should not be at 35 (f5)" board_of_pieces 3 5
       "_";
   ]
 

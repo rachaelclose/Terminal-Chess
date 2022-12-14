@@ -3,7 +3,6 @@
 (**)
 
 open Game.Board
-open Game.State
 
 open Printf
 (** initial board*)
