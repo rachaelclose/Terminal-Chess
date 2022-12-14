@@ -78,14 +78,14 @@ let parse board str =
       else if h = "help" then (
         print_endline
           "Commands: move c#1 c#2 where c is a char a to h and # is a number 1 \n\
-          \              to 8 and c#1 represents the current row and column \
-           and c#2 \n\
-          \              represents the destination row and column\n\
+          \             to 8 and c#1 represents the current row and column and \
+           c#2 \n\
+          \             represents the destination row and column\n\
           \          castle kcr rcr where kcr is the king's column and row in \n\
-          \              the format c# and rcr is the rook's column and row in \
+          \             the format c# and rcr is the rook's column and row in \
            the format c#\n\
           \          en_passant c#1 c#2 where c#1 is the current row and \n\
-          \              column and c#2 is the destination row and column \n\
+          \             column and c#2 is the destination row and column \n\
           \          withdraw is is used to withdraw from the game \n\
           \          checkmate is used to end the game when checkmate occurs\n\
           \          ";
