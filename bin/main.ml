@@ -77,10 +77,11 @@ let parse board str =
         true)
       else if h = "help" then (
         print_endline
-          "Commands: move c#1 c#2 where c is a char a to h and # is a number 1 \n\
-          \             to 8 and c#1 represents the current row and column and \
-           c#2 \n\
-          \             represents the destination row and column\n\
+          "Commands: move c#1 c#2 where c is a char a to h representing a \n\
+          \             column and # is a number 1 to 8 representing a row.\n\
+          \             c#1 represents the piece's current column and row and \
+           c#2\n\
+          \             represents the destination colums and row\n\
           \          castle kcr rcr where kcr is the king's column and row in \n\
           \             the format c# and rcr is the rook's column and row in \
            the format c#\n\
