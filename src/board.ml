@@ -429,30 +429,30 @@ let general_moves_pawn_white board new_inside_arr r c =
     r = 6
     && side_piece (what_piece board (r - 1) c) = Nothing
     && side_piece (what_piece board (r - 2) c) = Nothing
-  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c))
-  else if r <> 6 then (
-    let left =
-      if c - 1 >= 0 then
-        match side_piece (what_piece board (r - 1) (c - 1)) with
-        | White -> ()
-        | Black ->
-            new_inside_arr :=
-              Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
-        | Nothing -> ()
-      else ()
-    in
-    let right =
-      if c + 1 < 8 then
-        match side_piece (what_piece board (r - 1) (c + 1)) with
-        | White -> ()
-        | Black ->
-            new_inside_arr :=
-              Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
-        | Nothing -> ()
-      else ()
-    in
-    right;
-    left)
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r - 2, c));
+  (let left =
+     if c - 1 >= 0 then
+       match side_piece (what_piece board (r - 1) (c - 1)) with
+       | White -> ()
+       | Black ->
+           new_inside_arr :=
+             Array.append !new_inside_arr (Array.make 1 (r - 1, c - 1))
+       | Nothing -> ()
+     else ()
+   in
+   let right =
+     if c + 1 < 8 then
+       match side_piece (what_piece board (r - 1) (c + 1)) with
+       | White -> ()
+       | Black ->
+           new_inside_arr :=
+             Array.append !new_inside_arr (Array.make 1 (r - 1, c + 1))
+       | Nothing -> ()
+     else ()
+   in
+   right;
+   left);
+  !new_inside_arr
 
 let general_moves_pawn_black board new_inside_arr r c =
   if side_piece (what_piece board (r + 1) c) = Nothing then
@@ -461,30 +461,30 @@ let general_moves_pawn_black board new_inside_arr r c =
     r = 1
     && side_piece (what_piece board (r + 1) c) = Nothing
     && side_piece (what_piece board (r + 2) c) = Nothing
-  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c))
-  else if r <> 1 then (
-    let right =
-      if c + 1 < 8 then
-        match side_piece (what_piece board (r + 1) (c + 1)) with
-        | White ->
-            new_inside_arr :=
-              Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
-        | Black -> ()
-        | Nothing -> ()
-      else ()
-    in
-    let left =
-      if c - 1 >= 0 then
-        match side_piece (what_piece board (r + 1) (c - 1)) with
-        | White ->
-            new_inside_arr :=
-              Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
-        | Black -> ()
-        | Nothing -> ()
-      else ()
-    in
-    right;
-    left)
+  then new_inside_arr := Array.append !new_inside_arr (Array.make 1 (r + 2, c));
+  (let right =
+     if c + 1 < 8 then
+       match side_piece (what_piece board (r + 1) (c + 1)) with
+       | White ->
+           new_inside_arr :=
+             Array.append !new_inside_arr (Array.make 1 (r + 1, c + 1))
+       | Black -> ()
+       | Nothing -> ()
+     else ()
+   in
+   let left =
+     if c - 1 >= 0 then
+       match side_piece (what_piece board (r + 1) (c - 1)) with
+       | White ->
+           new_inside_arr :=
+             Array.append !new_inside_arr (Array.make 1 (r + 1, c - 1))
+       | Black -> ()
+       | Nothing -> ()
+     else ()
+   in
+   right;
+   left);
+  !new_inside_arr
 
 let reset_turns_en_passant board whites_turn_bool =
   for i = 0 to 7 do
