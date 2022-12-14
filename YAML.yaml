@@ -26,6 +26,5 @@ desc: >
   Our project is a simulation of the two player game of chess. The interface
   displays the chessboard as well as the current location of the chess pieces.
   It also flips around to display the other player’s point of view after a turn,
-  so players can take turns moving their pieces. The interface will indicate
-  when a king is in checkmate, thus ending the game and offering a chance
-  to restart the game.
+  so players can take turns moving their pieces. The user will indicate
+  when a king is in checkmate, thus ending the game.
